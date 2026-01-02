@@ -3,36 +3,36 @@ package earth.terrarium.botarium.common.registry.fluid;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.Rarity;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 
 public record FluidProperties(ResourceLocation id,
-                              double motionScale,
-                              boolean canPushEntity,
-                              boolean canSwim,
-                              boolean canDrown,
-                              float fallDistanceModifier,
-                              boolean canExtinguish,
-                              boolean canConvertToSource,
-                              boolean supportsBloating,
-                              BlockPathTypes pathType,
-                              BlockPathTypes adjacentPathType,
-                              boolean canHydrate,
-                              int lightLevel,
-                              int density,
-                              int temperature,
-                              int viscosity,
-                              Rarity rarity,
-                              FluidSounds sounds,
-                              ResourceLocation still,
-                              ResourceLocation flowing,
-                              ResourceLocation overlay,
-                              ResourceLocation screenOverlay,
-                              int tintColor,
-                              int tickDelay,
-                              int slopeFindDistance,
-                              int dropOff,
-                              float explosionResistance,
-                              boolean canPlace
+        double motionScale,
+        boolean canPushEntity,
+        boolean canSwim,
+        boolean canDrown,
+        float fallDistanceModifier,
+        boolean canExtinguish,
+        boolean canConvertToSource,
+        boolean supportsBloating,
+        PathType pathType,
+        PathType adjacentPathType,
+        boolean canHydrate,
+        int lightLevel,
+        int density,
+        int temperature,
+        int viscosity,
+        Rarity rarity,
+        FluidSounds sounds,
+        ResourceLocation still,
+        ResourceLocation flowing,
+        ResourceLocation overlay,
+        ResourceLocation screenOverlay,
+        int tintColor,
+        int tickDelay,
+        int slopeFindDistance,
+        int dropOff,
+        float explosionResistance,
+        boolean canPlace
 
 ) implements FluidInformation {
 
@@ -54,8 +54,8 @@ public record FluidProperties(ResourceLocation id,
         private boolean canExtinguish = false;
         private boolean canConvertToSource = true;
         private boolean supportsBloating = false;
-        private BlockPathTypes pathType = BlockPathTypes.WATER;
-        private BlockPathTypes adjacentPathType = BlockPathTypes.WATER_BORDER;
+        private PathType pathType = PathType.WATER;
+        private PathType adjacentPathType = PathType.WATER_BORDER;
         private boolean canHydrate = true;
         private int lightLevel = 0;
         private int density = 1000;
@@ -118,12 +118,12 @@ public record FluidProperties(ResourceLocation id,
             return this;
         }
 
-        public Builder pathType(BlockPathTypes pathType) {
+        public Builder pathType(PathType pathType) {
             this.pathType = pathType;
             return this;
         }
 
-        public Builder adjacentPathType(BlockPathTypes adjacentPathType) {
+        public Builder adjacentPathType(PathType adjacentPathType) {
             this.adjacentPathType = adjacentPathType;
             return this;
         }
@@ -214,7 +214,10 @@ public record FluidProperties(ResourceLocation id,
         }
 
         public FluidProperties build(ResourceLocation id) {
-            return new FluidProperties(id, motionScale, canPushEntity, canSwim, canDrown, fallDistanceModifier, canExtinguish, canConvertToSource, supportsBloating, pathType, adjacentPathType, canHydrate, lightLevel, density, temperature, viscosity, rarity, sounds, still, flowing, overlay, screenOverlay, tintColor, tickRate, slopeFindDistance, dropOff, explosionResistance, canPlace);
+            return new FluidProperties(id, motionScale, canPushEntity, canSwim, canDrown, fallDistanceModifier,
+                    canExtinguish, canConvertToSource, supportsBloating, pathType, adjacentPathType, canHydrate,
+                    lightLevel, density, temperature, viscosity, rarity, sounds, still, flowing, overlay, screenOverlay,
+                    tintColor, tickRate, slopeFindDistance, dropOff, explosionResistance, canPlace);
         }
     }
 }

@@ -7,10 +7,6 @@
     "defaultRequire": 1
   },
   "mixins": [
-    "BlockEntityMixin",
-    "ItemAttachmentHolderMixin",
-    "ItemStackMixin",
-    "ItemVariantImplMixin",
-    "ItemVariantMixin"
+    "BlockEntityMixin"
   ]
 }

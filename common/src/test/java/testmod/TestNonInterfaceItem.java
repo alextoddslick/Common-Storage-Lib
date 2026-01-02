@@ -32,26 +32,31 @@ public class TestNonInterfaceItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag tooltipFlag) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip,
+            TooltipFlag tooltipFlag) {
         ItemStackHolder itemStackHolder = new ItemStackHolder(stack);
         ItemFluidContainer itemFluidManager = FluidContainer.of(itemStackHolder);
         if (itemFluidManager != null) {
             long oxygen = itemFluidManager.getFluids().get(0).getFluidAmount();
             long oxygenCapacity = itemFluidManager.getTankCapacity(0);
-            tooltip.add(Component.literal("Water: " + oxygen + "mb / " + oxygenCapacity + "mb").setStyle(Style.EMPTY.withColor(ChatFormatting.GRAY)));
+            tooltip.add(Component.literal("Water: " + oxygen + "mb / " + oxygenCapacity + "mb")
+                    .setStyle(Style.EMPTY.withColor(ChatFormatting.GRAY)));
         }
 
         EnergyContainer energyManager = EnergyContainer.of(itemStackHolder);
         if (energyManager != null) {
             long energy = energyManager.getStoredEnergy();
             long energyCapacity = energyManager.getMaxCapacity();
-            tooltip.add(Component.literal("Energy: " + energy + "FE / " + energyCapacity + "FE").setStyle(Style.EMPTY.withColor(ChatFormatting.GRAY)));
+            tooltip.add(Component.literal("Energy: " + energy + "FE / " + energyCapacity + "FE")
+                    .setStyle(Style.EMPTY.withColor(ChatFormatting.GRAY)));
         }
     }
 
     /*
-     * Tests fluid transfer between 2 test items. To use, fill 1 test item with water and put it in the mainhand.
-     * Then put another empty test item in the offhand. then right click to transfer from the mainhand to the
+     * Tests fluid transfer between 2 test items. To use, fill 1 test item with
+     * water and put it in the mainhand.
+     * Then put another empty test item in the offhand. then right click to transfer
+     * from the mainhand to the
      * offhand and print the offhand amount.
      */
     @Override
@@ -66,17 +71,29 @@ public class TestNonInterfaceItem extends Item {
                 ItemFluidContainer itemFluidManager = FluidContainer.of(from);
 
                 if (player.isShiftKeyDown()) {
-                    if (FluidApi.moveFluid(to, from, FluidHolder.of(BuiltInRegistries.FLUID.get(new ResourceLocation("minecraft", "water")), FluidConstants.fromMillibuckets(1000), null), false) > 0) {
-                        level.playSound(null, player.blockPosition(), SoundEvents.GENERIC_DRINK, SoundSource.PLAYERS, 1, 1);
-                        if (from.isDirty()) player.setItemInHand(interactionHand, from.getStack());
-                        if (to.isDirty()) player.setItemSlot(EquipmentSlot.OFFHAND, to.getStack());
+                    if (FluidApi.moveFluid(to, from,
+                            FluidHolder.of(BuiltInRegistries.FLUID.get(ResourceLocation.parse("minecraft:water")),
+                                    FluidConstants.fromMillibuckets(1000), null),
+                            false) > 0) {
+                        level.playSound(null, player.blockPosition(), SoundEvents.GENERIC_DRINK, SoundSource.PLAYERS, 1,
+                                1);
+                        if (from.isDirty())
+                            player.setItemInHand(interactionHand, from.getStack());
+                        if (to.isDirty())
+                            player.setItemSlot(EquipmentSlot.OFFHAND, to.getStack());
                         return InteractionResultHolder.consume(player.getMainHandItem());
                     }
                 } else {
-                    if (FluidApi.moveFluid(from, to, FluidHolder.of(BuiltInRegistries.FLUID.get(new ResourceLocation("minecraft", "water")), FluidConstants.fromMillibuckets(1000), null), false) > 0) {
-                        if (from.isDirty()) player.setItemInHand(interactionHand, from.getStack());
-                        if (to.isDirty()) player.setItemSlot(EquipmentSlot.OFFHAND, to.getStack());
-                        level.playSound(null, player.blockPosition(), SoundEvents.GENERIC_DRINK, SoundSource.PLAYERS, 1, 1);
+                    if (FluidApi.moveFluid(from, to,
+                            FluidHolder.of(BuiltInRegistries.FLUID.get(ResourceLocation.parse("minecraft:water")),
+                                    FluidConstants.fromMillibuckets(1000), null),
+                            false) > 0) {
+                        if (from.isDirty())
+                            player.setItemInHand(interactionHand, from.getStack());
+                        if (to.isDirty())
+                            player.setItemSlot(EquipmentSlot.OFFHAND, to.getStack());
+                        level.playSound(null, player.blockPosition(), SoundEvents.GENERIC_DRINK, SoundSource.PLAYERS, 1,
+                                1);
                         return InteractionResultHolder.consume(player.getMainHandItem());
                     }
                 }

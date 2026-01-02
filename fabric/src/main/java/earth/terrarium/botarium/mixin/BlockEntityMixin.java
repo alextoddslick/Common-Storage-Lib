@@ -7,7 +7,9 @@ import earth.terrarium.botarium.common.fluid.base.FluidContainer;
 import earth.terrarium.botarium.common.item.ItemContainerBlock;
 import earth.terrarium.botarium.common.item.base.BotariumItemBlock;
 import earth.terrarium.botarium.common.item.base.ItemContainer;
+import earth.terrarium.botarium.common.item.base.ItemContainer;
 import earth.terrarium.botarium.util.Serializable;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
@@ -33,33 +35,37 @@ public abstract class BlockEntityMixin {
     @Shadow
     public abstract BlockState getBlockState();
 
-    @Inject(method = "load", at = @At("TAIL"))
-    public void deserializeData(CompoundTag compoundTag, CallbackInfo ci) {
-        FluidContainer fluidContainer = FluidApi.getAPIFluidContainer(this.getLevel(), this.getBlockPos(), this.getBlockState(), (BlockEntity) (Object) this, null);
+    @Inject(method = "loadAdditional", at = @At("TAIL"))
+    public void deserializeData(CompoundTag compoundTag, HolderLookup.Provider provider, CallbackInfo ci) {
+        FluidContainer fluidContainer = FluidApi.getAPIFluidContainer(this.getLevel(), this.getBlockPos(),
+                this.getBlockState(), (BlockEntity) (Object) this, null);
         if (fluidContainer != null) {
-            fluidContainer.deserialize(compoundTag);
+            fluidContainer.deserialize(compoundTag, provider);
         }
-        EnergyContainer energyContainer = EnergyApi.getAPIEnergyContainer(this.getLevel(), this.getBlockPos(), this.getBlockState(), (BlockEntity) (Object) this, null);
+        EnergyContainer energyContainer = EnergyApi.getAPIEnergyContainer(this.getLevel(), this.getBlockPos(),
+                this.getBlockState(), (BlockEntity) (Object) this, null);
         if (energyContainer != null) {
-            energyContainer.deserialize(compoundTag);
+            energyContainer.deserialize(compoundTag, provider);
         }
         if (this instanceof ItemContainerBlock itemContainerBlock) {
-            itemContainerBlock.getContainer().deserialize(compoundTag);
+            itemContainerBlock.getContainer().deserialize(compoundTag, provider);
         }
     }
 
     @Inject(method = "saveAdditional", at = @At("TAIL"))
-    public void serializeData(CompoundTag compoundTag, CallbackInfo ci) {
-        FluidContainer fluidContainer = FluidApi.getAPIFluidContainer(this.getLevel(), this.getBlockPos(), this.getBlockState(), (BlockEntity) (Object) this, null);
+    public void serializeData(CompoundTag compoundTag, HolderLookup.Provider provider, CallbackInfo ci) {
+        FluidContainer fluidContainer = FluidApi.getAPIFluidContainer(this.getLevel(), this.getBlockPos(),
+                this.getBlockState(), (BlockEntity) (Object) this, null);
         if (fluidContainer != null) {
-            fluidContainer.serialize(compoundTag);
+            fluidContainer.serialize(compoundTag, provider);
         }
-        EnergyContainer energyContainer = EnergyApi.getAPIEnergyContainer(this.getLevel(), this.getBlockPos(), this.getBlockState(), (BlockEntity) (Object) this, null);
+        EnergyContainer energyContainer = EnergyApi.getAPIEnergyContainer(this.getLevel(), this.getBlockPos(),
+                this.getBlockState(), (BlockEntity) (Object) this, null);
         if (energyContainer != null) {
-            energyContainer.serialize(compoundTag);
+            energyContainer.serialize(compoundTag, provider);
         }
         if (this instanceof ItemContainerBlock itemContainerBlock) {
-            itemContainerBlock.getContainer().serialize(compoundTag);
+            itemContainerBlock.getContainer().serialize(compoundTag, provider);
         }
     }
 }

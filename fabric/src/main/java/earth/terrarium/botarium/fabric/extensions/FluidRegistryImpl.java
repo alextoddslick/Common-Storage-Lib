@@ -45,7 +45,7 @@ public class FluidRegistryImpl {
 
     @ImplementedByExtension
     public FluidData register(String id, FluidProperties.Builder properties) {
-        return register(properties.build(new ResourceLocation(modid, id)));
+        return register(properties.build(ResourceLocation.fromNamespaceAndPath(modid, id)));
     }
 
     @ImplementsBaseElement

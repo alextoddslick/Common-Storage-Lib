@@ -22,7 +22,7 @@ public class SingleItemFluidSlot extends ExtendedFluidContainer implements Stora
 
     public FluidVariant fluidVariant() {
         FluidHolder fluidHolder = container.container.getFluids().get(slotIndex);
-        return FluidVariant.of(fluidHolder.getFluid(), fluidHolder.getCompound());
+        return FluidVariant.of(fluidHolder.getFluid(), FabricFluidHolder.patchFromTag(fluidHolder.getCompound()));
     }
 
     @Override

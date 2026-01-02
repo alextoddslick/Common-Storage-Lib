@@ -12,11 +12,12 @@ public class FabricItemApiEntityLookup extends FabricEntityContainerLookup<ItemC
     public static final FabricItemApiEntityLookup INSTANCE = new FabricItemApiEntityLookup();
 
     public FabricItemApiEntityLookup() {
-        super(new ResourceLocation(Botarium.MOD_ID, "entity"), ItemContainer.class, Void.class);
+        super(ResourceLocation.fromNamespaceAndPath(Botarium.MOD_ID, "entity"), ItemContainer.class, Void.class);
     }
 
     @Override
     public void registerEntityTypes(EntityGetter<ItemContainer, Void> getter, Supplier<EntityType<?>>... containers) {
-        super.registerEntityTypes((entity, context) -> UpdatingItemContainer.of(getter.getContainer(entity, context)), containers);
+        super.registerEntityTypes((entity, context) -> UpdatingItemContainer.of(getter.getContainer(entity, context)),
+                containers);
     }
 }

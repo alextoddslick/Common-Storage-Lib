@@ -38,26 +38,26 @@ public class TestBlock extends BaseEntityBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
+    protected InteractionResult useWithoutItem(BlockState blockState, Level level, BlockPos blockPos, Player player,
+            BlockHitResult blockHitResult) {
         if (player.isShiftKeyDown()
                 && level.getBlockEntity(blockPos) instanceof TestBlockEntity testBlockEntity
-                && testBlockEntity.getFluidContainer(level, blockPos, blockState, testBlockEntity, null).container() instanceof SimpleFluidContainer fluidContainer
-        ) {
+                && testBlockEntity.getFluidContainer(level, blockPos, blockState, testBlockEntity, null)
+                        .container() instanceof SimpleFluidContainer fluidContainer) {
             fluidContainer.clearContent();
         }
 
         if (!level.isClientSide()) {
             player.sendSystemMessage(Component.literal("Energy: " + EnergyContainer.of(
                     level.getBlockEntity(blockPos),
-                    blockHitResult.getDirection()
-            ).getStoredEnergy()));
+                    blockHitResult.getDirection()).getStoredEnergy()));
 
             if (level.getBlockEntity(blockPos) instanceof TestBlockEntity testBlockEntity) {
-                player.sendSystemMessage(Component.literal("Fluid: " + FluidContainer.of(level, blockPos, blockState, testBlockEntity, null).getFluids().stream()
-                        .mapToLong(FluidHolder::getFluidAmount)
-                        .mapToObj(Long::toString)
-                        .collect(Collectors.joining(", "))
-                ));
+                player.sendSystemMessage(Component.literal("Fluid: "
+                        + FluidContainer.of(level, blockPos, blockState, testBlockEntity, null).getFluids().stream()
+                                .mapToLong(FluidHolder::getFluidAmount)
+                                .mapToObj(Long::toString)
+                                .collect(Collectors.joining(", "))));
             }
 
             BlockEntity blockEntity = level.getBlockEntity(blockPos);
@@ -65,7 +65,8 @@ public class TestBlock extends BaseEntityBlock {
             if (container != null) {
                 player.sendSystemMessage(Component.literal("Mana: " + container.getStoredAmount()));
                 container.insert(100, false);
-                if (blockEntity != null) blockEntity.setChanged();
+                if (blockEntity != null)
+                    blockEntity.setChanged();
                 level.sendBlockUpdated(blockPos, blockState, blockState, TestBlock.UPDATE_ALL);
             }
         }
@@ -75,7 +76,9 @@ public class TestBlock extends BaseEntityBlock {
 
     @Nullable
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> blockEntityType) {
-        return createTickerHelper(blockEntityType, TestMod.EXAMPLE_BLOCK_ENTITY.get(), (level1, blockPos, blockState1, blockEntity) -> ((TestBlockEntity) blockEntity).tick());
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState,
+            BlockEntityType<T> blockEntityType) {
+        return createTickerHelper(blockEntityType, TestMod.EXAMPLE_BLOCK_ENTITY.get(),
+                (level1, blockPos, blockState1, blockEntity) -> ((TestBlockEntity) blockEntity).tick());
     }
 }

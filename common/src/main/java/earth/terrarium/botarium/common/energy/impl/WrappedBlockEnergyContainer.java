@@ -9,14 +9,18 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 /**
  * Represents a wrapped energy container for a block entity.
- * This class implements the EnergyContainer interface and the Updatable interface.
- * It delegates energy-related operations to the wrapped energy container, and updates the block entity when the energy is changed.
+ * This class implements the EnergyContainer interface and the Updatable
+ * interface.
+ * It delegates energy-related operations to the wrapped energy container, and
+ * updates the block entity when the energy is changed.
  *
  * @param blockEntity The block entity.
- * @param container   The wrapped energy container. Botarium provides a default implementation for this with {@link SimpleEnergyContainer}.
+ * @param container   The wrapped energy container. Botarium provides a default
+ *                    implementation for this with
+ *                    {@link SimpleEnergyContainer}.
  */
 public record WrappedBlockEnergyContainer(BlockEntity blockEntity,
-                                          EnergyContainer container) implements EnergyContainer, Updatable {
+        EnergyContainer container) implements EnergyContainer, Updatable {
 
     @Override
     public long insertEnergy(long energy, boolean simulate) {
@@ -31,14 +35,16 @@ public record WrappedBlockEnergyContainer(BlockEntity blockEntity,
     @Override
     public long internalInsert(long amount, boolean simulate) {
         long inserted = container.internalInsert(amount, simulate);
-        if (!simulate) update();
+        if (!simulate)
+            update();
         return inserted;
     }
 
     @Override
     public long internalExtract(long amount, boolean simulate) {
         long l = container.internalExtract(amount, simulate);
-        if (!simulate) update();
+        if (!simulate)
+            update();
         return l;
     }
 
@@ -83,19 +89,20 @@ public record WrappedBlockEnergyContainer(BlockEntity blockEntity,
     }
 
     @Override
-    public void deserialize(CompoundTag nbt) {
-        container.deserialize(nbt);
+    public void deserialize(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider provider) {
+        container.deserialize(nbt, provider);
     }
 
     @Override
-    public CompoundTag serialize(CompoundTag nbt) {
-        return container.serialize(nbt);
+    public CompoundTag serialize(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider provider) {
+        return container.serialize(nbt, provider);
     }
 
     @Override
     public void update() {
         blockEntity.setChanged();
-        blockEntity.getLevel().sendBlockUpdated(blockEntity.getBlockPos(), blockEntity.getBlockState(), blockEntity.getBlockState(), Block.UPDATE_ALL);
+        blockEntity.getLevel().sendBlockUpdated(blockEntity.getBlockPos(), blockEntity.getBlockState(),
+                blockEntity.getBlockState(), Block.UPDATE_ALL);
     }
 
     @Override

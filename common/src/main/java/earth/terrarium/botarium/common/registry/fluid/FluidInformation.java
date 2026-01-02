@@ -2,7 +2,7 @@ package earth.terrarium.botarium.common.registry.fluid;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Rarity;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 
 public interface FluidInformation {
 
@@ -24,9 +24,9 @@ public interface FluidInformation {
 
     boolean supportsBloating();
 
-    BlockPathTypes pathType();
+    PathType pathType();
 
-    BlockPathTypes adjacentPathType();
+    PathType adjacentPathType();
 
     boolean canHydrate();
 

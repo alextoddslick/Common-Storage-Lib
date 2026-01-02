@@ -20,7 +20,7 @@ public class SingleFluidSlot extends ExtendedFluidContainer implements StorageVi
 
     public FluidVariant fluidVariant() {
         FluidHolder fluidHolder = container.container.getFluids().get(slotIndex);
-        return FluidVariant.of(fluidHolder.getFluid(), fluidHolder.getCompound());
+        return FluidVariant.of(fluidHolder.getFluid(), FabricFluidHolder.patchFromTag(fluidHolder.getCompound()));
     }
 
     @Override

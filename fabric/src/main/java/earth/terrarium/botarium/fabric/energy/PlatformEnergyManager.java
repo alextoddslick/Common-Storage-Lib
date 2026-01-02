@@ -18,7 +18,8 @@ import team.reborn.energy.api.EnergyStorage;
 public record PlatformEnergyManager(EnergyStorage energy) implements EnergyContainer {
 
     @Nullable
-    public static PlatformEnergyManager of(Level level, BlockPos pos, BlockState state, @Nullable BlockEntity entity, @Nullable Direction direction) {
+    public static PlatformEnergyManager of(Level level, BlockPos pos, BlockState state, @Nullable BlockEntity entity,
+            @Nullable Direction direction) {
         EnergyStorage fabricEnergy = EnergyStorage.SIDED.find(level, pos, state, entity, direction);
         return fabricEnergy == null ? null : new PlatformEnergyManager(fabricEnergy);
     }
@@ -27,8 +28,10 @@ public record PlatformEnergyManager(EnergyStorage energy) implements EnergyConta
     public long insertEnergy(long maxAmount, boolean simulate) {
         try (Transaction txn = Transaction.openOuter()) {
             long insert = energy.insert(maxAmount, txn);
-            if (simulate) txn.abort();
-            else txn.commit();
+            if (simulate)
+                txn.abort();
+            else
+                txn.commit();
             return insert;
         }
     }
@@ -37,8 +40,10 @@ public record PlatformEnergyManager(EnergyStorage energy) implements EnergyConta
     public long extractEnergy(long maxAmount, boolean simulate) {
         try (Transaction txn = Transaction.openOuter()) {
             long extract = energy.extract(maxAmount, txn);
-            if (simulate) txn.abort();
-            else txn.commit();
+            if (simulate)
+                txn.abort();
+            else
+                txn.commit();
             return extract;
         }
     }
@@ -88,12 +93,12 @@ public record PlatformEnergyManager(EnergyStorage energy) implements EnergyConta
     }
 
     @Override
-    public void deserialize(CompoundTag nbt) {
+    public void deserialize(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider provider) {
 
     }
 
     @Override
-    public CompoundTag serialize(CompoundTag nbt) {
+    public CompoundTag serialize(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider provider) {
         return nbt;
     }
 

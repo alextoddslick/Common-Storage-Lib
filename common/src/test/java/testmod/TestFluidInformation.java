@@ -6,24 +6,23 @@ import earth.terrarium.botarium.common.registry.fluid.FluidSounds;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.Rarity;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 
 public class TestFluidInformation implements FluidInformation {
 
     private static final FluidInformation DEFAULT = FluidProperties.create()
-            .still(new ResourceLocation("minecraft:block/water_still"))
-            .flowing(new ResourceLocation("minecraft:block/water_flow"))
-            .overlay(new ResourceLocation("minecraft:block/water_overlay"))
-            .screenOverlay(new ResourceLocation("textures/misc/underwater.png"))
+            .still(ResourceLocation.parse("minecraft:block/water_still"))
+            .flowing(ResourceLocation.parse("minecraft:block/water_flow"))
+            .overlay(ResourceLocation.parse("minecraft:block/water_overlay"))
+            .screenOverlay(ResourceLocation.parse("textures/misc/underwater.png"))
             .tintColor(0x00FF00)
             .sounds("bucket_empty", SoundEvents.AXE_STRIP)
             .sounds("bucket_fill", SoundEvents.GLASS_BREAK)
             .build(null);
 
-
     @Override
     public ResourceLocation id() {
-        return new ResourceLocation("testmod", "test");
+        return ResourceLocation.fromNamespaceAndPath("testmod", "test");
     }
 
     @Override
@@ -67,13 +66,13 @@ public class TestFluidInformation implements FluidInformation {
     }
 
     @Override
-    public BlockPathTypes pathType() {
-        return DEFAULT.pathType();
+    public PathType pathType() {
+        return PathType.WATER;
     }
 
     @Override
-    public BlockPathTypes adjacentPathType() {
-        return DEFAULT.adjacentPathType();
+    public PathType adjacentPathType() {
+        return PathType.WATER_BORDER;
     }
 
     @Override
@@ -192,7 +191,6 @@ public class TestFluidInformation implements FluidInformation {
                 slopeFindDistance(),
                 dropOff(),
                 explosionResistance(),
-                canPlace()
-        );
+                canPlace());
     }
 }

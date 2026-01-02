@@ -20,7 +20,7 @@ dependencies {
 
     modApi(group = "com.terraformersmc", name = "modmenu", version = modMenuVersion)
 
-    "include"(modApi(group = "teamreborn", name = "energy", version = "3.0.0")) {
+    "include"(modApi(group = "teamreborn", name = "energy", version = "4.1.0")) {
         exclude(group = "net.fabricmc", module = "fabric-api")
     }
 

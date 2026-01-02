@@ -27,13 +27,16 @@ public class SimpleItemContainer implements SerializableContainer {
     }
 
     @Override
-    public void deserialize(CompoundTag nbt) {
-        ContainerHelper.loadAllItems(nbt, items);
+    public void deserialize(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider provider) {
+        if (provider != null)
+            ContainerHelper.loadAllItems(nbt, items, provider);
     }
 
     @Override
-    public CompoundTag serialize(CompoundTag nbt) {
-        return ContainerHelper.saveAllItems(nbt, items);
+    public CompoundTag serialize(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider provider) {
+        if (provider != null)
+            return ContainerHelper.saveAllItems(nbt, items, provider);
+        return nbt;
     }
 
     @Override

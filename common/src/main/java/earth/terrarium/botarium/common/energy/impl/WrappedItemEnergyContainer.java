@@ -4,21 +4,26 @@ import earth.terrarium.botarium.common.energy.base.EnergyContainer;
 import earth.terrarium.botarium.common.energy.base.EnergySnapshot;
 import earth.terrarium.botarium.util.Updatable;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.ItemStack;
 
 /**
  * Represents a wrapped energy container for an item.
- * This class implements the EnergyContainer interface and the Updatable interface.
- * It delegates energy-related operations to the wrapped energy container, and updates the item when the energy is changed.
+ * This class implements the EnergyContainer interface and the Updatable
+ * interface.
+ * It delegates energy-related operations to the wrapped energy container, and
+ * updates the item when the energy is changed.
  *
  * @param stack     The item stack.
- * @param container The wrapped energy container. Botarium provides a default implementation for this with {@link SimpleEnergyContainer}.
+ * @param container The wrapped energy container. Botarium provides a default
+ *                  implementation for this with {@link SimpleEnergyContainer}.
  */
 public record WrappedItemEnergyContainer(ItemStack stack,
-                                         EnergyContainer container) implements EnergyContainer, Updatable {
+        EnergyContainer container) implements EnergyContainer, Updatable {
 
     public WrappedItemEnergyContainer {
-        container.deserialize(stack.getOrCreateTag());
+        container.deserialize(stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag(), null);
     }
 
     @Override
@@ -34,14 +39,16 @@ public record WrappedItemEnergyContainer(ItemStack stack,
     @Override
     public long internalInsert(long amount, boolean simulate) {
         long l = container.internalInsert(amount, simulate);
-        if (!simulate) update();
+        if (!simulate)
+            update();
         return l;
     }
 
     @Override
     public long internalExtract(long amount, boolean simulate) {
         long extracted = container.internalExtract(amount, simulate);
-        if (!simulate) update();
+        if (!simulate)
+            update();
         return extracted;
     }
 
@@ -86,18 +93,18 @@ public record WrappedItemEnergyContainer(ItemStack stack,
     }
 
     @Override
-    public void deserialize(CompoundTag nbt) {
-        container.deserialize(nbt);
+    public void deserialize(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider provider) {
+        container.deserialize(nbt, provider);
     }
 
     @Override
-    public CompoundTag serialize(CompoundTag nbt) {
-        return container.serialize(nbt);
+    public CompoundTag serialize(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider provider) {
+        return container.serialize(nbt, provider);
     }
 
     @Override
     public void update() {
-        container.serialize(stack.getOrCreateTag());
+        CustomData.update(DataComponents.CUSTOM_DATA, stack, tag -> container.serialize(tag, null));
     }
 
     @Override

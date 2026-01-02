@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import team.reborn.energy.api.EnergyStorage;
 
 public record PlatformItemEnergyManager(ItemStackHolder holder, ContainerItemContext context,
-                                        EnergyStorage energy) implements EnergyContainer {
+        EnergyStorage energy) implements EnergyContainer {
 
     @Nullable
     public static PlatformItemEnergyManager of(ItemStackHolder stack) {
@@ -25,7 +25,8 @@ public record PlatformItemEnergyManager(ItemStackHolder holder, ContainerItemCon
     public long insertEnergy(long maxAmount, boolean simulate) {
         try (Transaction txn = Transaction.openOuter()) {
             long insert = energy.insert(maxAmount, txn);
-            if (simulate) txn.abort();
+            if (simulate)
+                txn.abort();
             else {
                 txn.commit();
                 holder.setStack(context.getItemVariant().toStack());
@@ -38,7 +39,8 @@ public record PlatformItemEnergyManager(ItemStackHolder holder, ContainerItemCon
     public long extractEnergy(long maxAmount, boolean simulate) {
         try (Transaction txn = Transaction.openOuter()) {
             long extract = energy.extract(maxAmount, txn);
-            if (simulate) txn.abort();
+            if (simulate)
+                txn.abort();
             else {
                 txn.commit();
                 holder.setStack(context.getItemVariant().toStack());
@@ -96,12 +98,12 @@ public record PlatformItemEnergyManager(ItemStackHolder holder, ContainerItemCon
     }
 
     @Override
-    public void deserialize(CompoundTag nbt) {
+    public void deserialize(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider provider) {
 
     }
 
     @Override
-    public CompoundTag serialize(CompoundTag nbt) {
+    public CompoundTag serialize(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider provider) {
         return nbt;
     }
 

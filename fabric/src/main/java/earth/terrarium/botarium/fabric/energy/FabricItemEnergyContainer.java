@@ -11,8 +11,11 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import team.reborn.energy.api.EnergyStorage;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.CustomData;
 
-public class FabricItemEnergyContainer<T extends EnergyContainer & Updatable> extends SnapshotParticipant<EnergySnapshot> implements EnergyStorage {
+public class FabricItemEnergyContainer<T extends EnergyContainer & Updatable>
+        extends SnapshotParticipant<EnergySnapshot> implements EnergyStorage {
     private final ContainerItemContext ctx;
     private final ItemStack stack;
     private final T container;
@@ -20,8 +23,11 @@ public class FabricItemEnergyContainer<T extends EnergyContainer & Updatable> ex
     public FabricItemEnergyContainer(ContainerItemContext ctx, ItemStack stack, T container) {
         this.ctx = ctx;
         this.stack = stack;
-        CompoundTag nbt = ctx.getItemVariant().getNbt();
-        if (nbt != null) container.deserialize(nbt);
+        @SuppressWarnings("OptionalGetWithoutIsPresent")
+        CustomData customData = ctx.getItemVariant().toStack().get(DataComponents.CUSTOM_DATA);
+        CompoundTag nbt = customData != null ? customData.copyTag() : null;
+        if (nbt != null)
+            container.deserialize(nbt, null);
         this.container = container;
     }
 

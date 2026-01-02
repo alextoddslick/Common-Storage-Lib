@@ -15,11 +15,12 @@ public class FabricItemApiItemLookup extends FabricItemContainerLookup<ItemConta
     public static final FabricItemApiItemLookup INSTANCE = new FabricItemApiItemLookup();
 
     public FabricItemApiItemLookup() {
-        super(new ResourceLocation(Botarium.MOD_ID, "item"), ItemContainer.class, Void.class);
+        super(ResourceLocation.fromNamespaceAndPath(Botarium.MOD_ID, "item"), ItemContainer.class, Void.class);
     }
 
     @Override
     public void registerItems(ItemGetter<ItemContainer, Void> getter, Supplier<Item>... containers) {
-        super.registerItems((stack, context) -> UpdatingItemContainer.of(getter.getContainer(stack, context)), containers);
+        super.registerItems((stack, context) -> UpdatingItemContainer.of(getter.getContainer(stack, context)),
+                containers);
     }
 }

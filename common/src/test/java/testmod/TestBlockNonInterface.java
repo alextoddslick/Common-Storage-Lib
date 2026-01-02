@@ -25,19 +25,20 @@ public class TestBlockNonInterface extends Block {
     }
 
     @Override
-    public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
+    protected InteractionResult useWithoutItem(BlockState blockState, Level level, BlockPos blockPos, Player player,
+            BlockHitResult blockHitResult) {
         EnergyContainer container = EnergyContainer.of(level, blockPos, blockState, null, null);
         FluidContainer fluidContainer = FluidContainer.of(level, blockPos, blockState, null, null);
         if (player.isShiftKeyDown()
                 && container != null
-                && fluidContainer != null
-        ) {
+                && fluidContainer != null) {
             fluidContainer.clearContent();
         }
 
         if (!level.isClientSide() && container != null && fluidContainer != null) {
             player.sendSystemMessage(Component.literal("Energy: " + container.getStoredEnergy()));
-            player.sendSystemMessage(Component.literal("Fluid: " + fluidContainer.getFluids().stream().reduce(0L, (a, b) -> a + b.getFluidAmount(), Long::sum)));
+            player.sendSystemMessage(Component.literal("Fluid: "
+                    + fluidContainer.getFluids().stream().reduce(0L, (a, b) -> a + b.getFluidAmount(), Long::sum)));
         }
         return InteractionResult.SUCCESS;
     }

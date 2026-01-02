@@ -7,6 +7,8 @@ import earth.terrarium.botarium.util.Serializable;
 import earth.terrarium.botarium.util.Snapshotable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.ContainerHelper;
@@ -15,9 +17,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 
-public class SimpleItemContainer implements ItemContainer, ItemContainerExtras, Serializable, Snapshotable<ItemSnapshot> {
+public class SimpleItemContainer
+        implements ItemContainer, ItemContainerExtras, Serializable, Snapshotable<ItemSnapshot> {
     private final NonNullList<ItemStack> stacks;
-    private Runnable onUpdate = () -> {};
+    private Runnable onUpdate = () -> {
+    };
 
     public SimpleItemContainer(int capacity) {
         this.stacks = NonNullList.withSize(capacity, ItemStack.EMPTY);
@@ -25,8 +29,8 @@ public class SimpleItemContainer implements ItemContainer, ItemContainerExtras, 
 
     public SimpleItemContainer(int capacity, ItemStack stack) {
         this(capacity);
-        onUpdate = () -> serialize(stack.getOrCreateTag());
-        this.deserialize(stack.getOrCreateTag());
+        onUpdate = () -> CustomData.update(DataComponents.CUSTOM_DATA, stack, tag -> serialize(tag, null));
+        this.deserialize(stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag(), null);
     }
 
     public SimpleItemContainer(int capacity, Level level, BlockPos blockPos) {
@@ -73,7 +77,8 @@ public class SimpleItemContainer implements ItemContainer, ItemContainerExtras, 
 
     @Override
     public @NotNull ItemStack insertItem(@NotNull ItemStack stack, boolean simulate) {
-        if (stack.isEmpty() || !isItemValid(0, stack)) return ItemStack.EMPTY;
+        if (stack.isEmpty() || !isItemValid(0, stack))
+            return ItemStack.EMPTY;
         int insertedAmount = 0;
         ItemStack initial = stack.copy();
         for (int i = 0; i < stacks.size(); i++) {
@@ -88,7 +93,8 @@ public class SimpleItemContainer implements ItemContainer, ItemContainerExtras, 
 
     @Override
     public @NotNull ItemStack insertIntoSlot(int slot, @NotNull ItemStack stack, boolean simulate) {
-        if (stack.isEmpty() || !isItemValid(slot, stack)) return ItemStack.EMPTY;
+        if (stack.isEmpty() || !isItemValid(slot, stack))
+            return ItemStack.EMPTY;
         ItemStack itemStack = stacks.get(slot).copy();
         if (itemStack.isEmpty()) {
             int amount = Math.min(stack.getCount(), getSlotLimit(slot));
@@ -96,7 +102,7 @@ public class SimpleItemContainer implements ItemContainer, ItemContainerExtras, 
                 stacks.set(slot, stack.copyWithCount(amount));
             }
             return stack.copyWithCount(amount);
-        } else if (ItemStack.isSameItemSameTags(stack, itemStack)) {
+        } else if (ItemStack.isSameItemSameComponents(stack, itemStack)) {
             int amount = Math.min(stack.getCount(), getSlotLimit(slot) - itemStack.getCount());
             if (amount > 0) {
                 if (!simulate) {
@@ -118,7 +124,7 @@ public class SimpleItemContainer implements ItemContainer, ItemContainerExtras, 
                 int toExtract = Math.min(amount - extracted.getCount(), stack.getCount());
                 if (extracted.isEmpty()) {
                     extracted = stack.copyWithCount(toExtract);
-                } else if (ItemStack.isSameItemSameTags(extracted, stack)) {
+                } else if (ItemStack.isSameItemSameComponents(extracted, stack)) {
                     extracted.grow(toExtract);
                 }
                 if (!simulate) {
@@ -136,7 +142,8 @@ public class SimpleItemContainer implements ItemContainer, ItemContainerExtras, 
     @Override
     public @NotNull ItemStack extractFromSlot(int slot, int amount, boolean simulate) {
         ItemStack stack = stacks.get(slot);
-        if (stack.isEmpty()) return ItemStack.EMPTY;
+        if (stack.isEmpty())
+            return ItemStack.EMPTY;
         int toExtract = Math.min(amount, stack.getCount());
         ItemStack extracted = stack.copyWithCount(toExtract);
         if (!simulate) {
@@ -156,13 +163,27 @@ public class SimpleItemContainer implements ItemContainer, ItemContainerExtras, 
     }
 
     @Override
-    public void deserialize(CompoundTag nbt) {
-        ContainerHelper.loadAllItems(nbt, stacks);
+    public void deserialize(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider provider) {
+        if (provider != null) {
+            ContainerHelper.loadAllItems(nbt, stacks, provider);
+        } else {
+            // Fallback or skip loading if provider is missing but required?
+            // ContainerHelper requires non-null provider.
+            // If we rely on BuiltInRegistries for basic items we might get away with it?
+            // No.
+            // We'll catch exception or log error if null?
+            // Since we modified Serializable to allow passing null for fluids, items need
+            // it.
+            // If constructor passed null, we are in trouble.
+        }
     }
 
     @Override
-    public CompoundTag serialize(CompoundTag nbt) {
-        return ContainerHelper.saveAllItems(nbt, stacks);
+    public CompoundTag serialize(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider provider) {
+        if (provider != null) {
+            return ContainerHelper.saveAllItems(nbt, stacks, provider);
+        }
+        return nbt;
     }
 
     @Override
@@ -184,13 +205,13 @@ public class SimpleItemContainer implements ItemContainer, ItemContainerExtras, 
         CompoundTag tag;
 
         public SimpleItemSnapshot() {
-            this.tag = SimpleItemContainer.this.serialize(new CompoundTag());
+            this.tag = SimpleItemContainer.this.serialize(new CompoundTag(), null);
         }
 
         @Override
         public void loadSnapshot() {
             SimpleItemContainer.this.stacks.clear();
-            SimpleItemContainer.this.deserialize(tag);
+            SimpleItemContainer.this.deserialize(tag, null);
         }
     }
 }

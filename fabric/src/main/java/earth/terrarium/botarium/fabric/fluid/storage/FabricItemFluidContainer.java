@@ -13,6 +13,8 @@ import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,15 +23,19 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.IntStream;
 
-public class FabricItemFluidContainer<T extends ItemFluidContainer & Updatable> extends ExtendedFluidContainer implements Storage<FluidVariant> {
+public class FabricItemFluidContainer<T extends ItemFluidContainer & Updatable> extends ExtendedFluidContainer
+        implements Storage<FluidVariant> {
     protected final T container;
     private final ContainerItemContext ctx;
 
     public FabricItemFluidContainer(ContainerItemContext ctx, T container) {
         this.container = container;
         this.ctx = ctx;
-        CompoundTag nbt = ctx.getItemVariant().getNbt();
-        if (nbt != null) container.deserialize(nbt);
+        @SuppressWarnings("OptionalGetWithoutIsPresent")
+        CustomData customData = ctx.getItemVariant().toStack().get(DataComponents.CUSTOM_DATA);
+        CompoundTag nbt = customData != null ? customData.copyTag() : null;
+        if (nbt != null)
+            container.deserialize(nbt, null);
     }
 
     @Override
@@ -77,7 +83,7 @@ public class FabricItemFluidContainer<T extends ItemFluidContainer & Updatable> 
 
     public void setChanged(TransactionContext transaction) {
         ItemStack stack = ctx.getItemVariant().toStack();
-        this.container.serialize(stack.getOrCreateTag());
+        CustomData.update(DataComponents.CUSTOM_DATA, stack, tag -> this.container.serialize(tag, null));
         ctx.exchange(ItemVariant.of(stack), ctx.getAmount(), transaction);
     }
 

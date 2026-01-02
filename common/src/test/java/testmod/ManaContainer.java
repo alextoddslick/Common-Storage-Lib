@@ -6,15 +6,16 @@ import earth.terrarium.botarium.common.generic.utils.AmountBasedContainer;
 import earth.terrarium.botarium.util.Serializable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
+import net.minecraft.core.HolderLookup;
 
 public class ManaContainer implements AmountBasedContainer, Serializable {
     public static final Codec<ManaContainer> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.LONG.fieldOf("Mana").forGetter(ManaContainer::getStoredAmount)
-    ).apply(instance, ManaContainer::new));
+            Codec.LONG.fieldOf("Mana").forGetter(ManaContainer::getStoredAmount)).apply(instance, ManaContainer::new));
 
     long storedAmount = 0;
 
-    public ManaContainer() {}
+    public ManaContainer() {
+    }
 
     public ManaContainer(long amt) {
         storedAmount = amt;
@@ -43,7 +44,8 @@ public class ManaContainer implements AmountBasedContainer, Serializable {
     @Override
     public long insert(long amount, boolean simulate) {
         long inserted = Mth.clamp(amount, 0, Math.min(maxInsert(), getCapacity() - getStoredAmount()));
-        if (simulate) return inserted;
+        if (simulate)
+            return inserted;
         this.setValue(this.storedAmount + inserted);
         return inserted;
     }
@@ -51,7 +53,8 @@ public class ManaContainer implements AmountBasedContainer, Serializable {
     @Override
     public long extract(long amount, boolean simulate) {
         long extracted = Mth.clamp(amount, 0, Math.min(maxExtract(), getStoredAmount()));
-        if (simulate) return extracted;
+        if (simulate)
+            return extracted;
         this.setValue(this.storedAmount - extracted);
         return extracted;
     }
@@ -76,12 +79,12 @@ public class ManaContainer implements AmountBasedContainer, Serializable {
     }
 
     @Override
-    public void deserialize(CompoundTag nbt) {
+    public void deserialize(CompoundTag nbt, HolderLookup.Provider provider) {
         this.storedAmount = nbt.getLong("Mana");
     }
 
     @Override
-    public CompoundTag serialize(CompoundTag nbt) {
+    public CompoundTag serialize(CompoundTag nbt, HolderLookup.Provider provider) {
         nbt.putLong("Mana", this.storedAmount);
         return nbt;
     }

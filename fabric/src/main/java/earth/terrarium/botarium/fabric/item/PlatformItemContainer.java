@@ -24,7 +24,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 public record PlatformItemContainer(Storage<ItemVariant> storage) implements ItemContainer {
 
     @Nullable
-    public static PlatformItemContainer of(Level level, BlockPos pos, BlockState state, @Nullable BlockEntity entity, @Nullable Direction direction) {
+    public static PlatformItemContainer of(Level level, BlockPos pos, BlockState state, @Nullable BlockEntity entity,
+            @Nullable Direction direction) {
         var itemStorage = ItemStorage.SIDED.find(level, pos, state, entity, direction);
         return itemStorage == null ? null : new PlatformItemContainer(itemStorage);
     }
@@ -93,9 +94,10 @@ public record PlatformItemContainer(Storage<ItemVariant> storage) implements Ite
         try (Transaction tx = Transaction.openOuter()) {
             ItemVariant itemVariant = null;
             int amountExtracted = 0;
-            for (Iterator<StorageView<ItemVariant>> it = storage.nonEmptyIterator(); it.hasNext(); ) {
+            for (Iterator<StorageView<ItemVariant>> it = storage.nonEmptyIterator(); it.hasNext();) {
                 StorageView<ItemVariant> view = it.next();
-                if (itemVariant == null) itemVariant = view.getResource();
+                if (itemVariant == null)
+                    itemVariant = view.getResource();
                 if (itemVariant.equals(view.getResource())) {
                     amountExtracted += (int) view.extract(itemVariant, amount - amountExtracted, tx);
                     if (amountExtracted >= amount) {
@@ -133,7 +135,7 @@ public record PlatformItemContainer(Storage<ItemVariant> storage) implements Ite
 
     @Override
     public boolean isEmpty() {
-        for (Iterator<StorageView<ItemVariant>> it = storage.nonEmptyIterator(); it.hasNext(); ) {
+        for (Iterator<StorageView<ItemVariant>> it = storage.nonEmptyIterator(); it.hasNext();) {
             if (it.next().getAmount() > 0) {
                 return false;
             }
@@ -144,7 +146,8 @@ public record PlatformItemContainer(Storage<ItemVariant> storage) implements Ite
     @Override
     public void clearContent() {
         for (StorageView<ItemVariant> itemVariantStorageView : storage) {
-            itemVariantStorageView.extract(itemVariantStorageView.getResource(), itemVariantStorageView.getAmount(), Transaction.openOuter());
+            itemVariantStorageView.extract(itemVariantStorageView.getResource(), itemVariantStorageView.getAmount(),
+                    Transaction.openOuter());
         }
     }
 }

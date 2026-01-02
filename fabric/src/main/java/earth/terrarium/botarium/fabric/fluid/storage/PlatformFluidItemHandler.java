@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public record PlatformFluidItemHandler(ItemStackHolder stack, ContainerItemContext context,
-                                       Storage<FluidVariant> storage) implements ItemFluidContainer {
+        Storage<FluidVariant> storage) implements ItemFluidContainer {
 
     @Nullable
     public static PlatformFluidItemHandler of(ItemStackHolder stack) {
@@ -55,7 +55,8 @@ public record PlatformFluidItemHandler(ItemStackHolder stack, ContainerItemConte
                 transaction.commit();
                 stack.setStack(context.getItemVariant().toStack());
             }
-            return extracted == 0 ? FluidHolder.empty() : FabricFluidHolder.of(fabricFluidHolder.toVariant(), extracted);
+            return extracted == 0 ? FluidHolder.empty()
+                    : FabricFluidHolder.of(fabricFluidHolder.toVariant(), extracted);
         }
     }
 
@@ -66,7 +67,8 @@ public record PlatformFluidItemHandler(ItemStackHolder stack, ContainerItemConte
             for (StorageView<FluidVariant> view : storage) {
                 if (counter == slot) {
                     storage.extract(view.getResource(), view.getAmount(), Transaction.openOuter());
-                    storage.insert(FabricFluidHolder.of(fluid).toVariant(), FabricFluidHolder.of(fluid).getAmount(), Transaction.openOuter());
+                    storage.insert(FabricFluidHolder.of(fluid).toVariant(), FabricFluidHolder.of(fluid).getAmount(),
+                            Transaction.openOuter());
                     break;
                 }
                 counter++;
@@ -77,7 +79,8 @@ public record PlatformFluidItemHandler(ItemStackHolder stack, ContainerItemConte
     @Override
     public List<FluidHolder> getFluids() {
         List<FluidHolder> fluids = new ArrayList<>();
-        storage.iterator().forEachRemaining(variant -> fluids.add(FabricFluidHolder.of(variant.getResource(), variant.getAmount())));
+        storage.iterator().forEachRemaining(
+                variant -> fluids.add(FabricFluidHolder.of(variant.getResource(), variant.getAmount())));
         return fluids;
     }
 
@@ -118,7 +121,8 @@ public record PlatformFluidItemHandler(ItemStackHolder stack, ContainerItemConte
         if (storage instanceof SlottedStorage<FluidVariant> slottedStorage) {
             try (Transaction transaction = Transaction.openOuter()) {
                 SingleSlotStorage<FluidVariant> fluidSlot = slottedStorage.getSlot(slot);
-                long extracted = fluidSlot.extract(FabricFluidHolder.of(toExtract).getResource(), toExtract.getFluidAmount(), transaction);
+                long extracted = fluidSlot.extract(FabricFluidHolder.of(toExtract).getResource(),
+                        toExtract.getFluidAmount(), transaction);
                 if (!simulate) {
                     transaction.commit();
                     stack.setStack(context.getItemVariant().toStack());
@@ -145,18 +149,19 @@ public record PlatformFluidItemHandler(ItemStackHolder stack, ContainerItemConte
     }
 
     @Override
-    public void deserialize(CompoundTag nbt) {
+    public void deserialize(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider provider) {
 
     }
 
     @Override
-    public CompoundTag serialize(CompoundTag nbt) {
+    public CompoundTag serialize(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider provider) {
         return nbt;
     }
 
     @Override
     public void clearContent() {
-        storage.iterator().forEachRemaining(variant -> storage.extract(variant.getResource(), variant.getAmount(), Transaction.openOuter()));
+        storage.iterator().forEachRemaining(
+                variant -> storage.extract(variant.getResource(), variant.getAmount(), Transaction.openOuter()));
     }
 
     @Override

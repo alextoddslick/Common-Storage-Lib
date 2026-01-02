@@ -57,12 +57,12 @@ public class UnlimitedEnergyContainer implements EnergyContainer, Updatable {
     }
 
     @Override
-    public void deserialize(CompoundTag nbt) {
+    public void deserialize(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider provider) {
         // do nothing
     }
 
     @Override
-    public CompoundTag serialize(CompoundTag nbt) {
+    public CompoundTag serialize(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider provider) {
         return nbt;
     }
 

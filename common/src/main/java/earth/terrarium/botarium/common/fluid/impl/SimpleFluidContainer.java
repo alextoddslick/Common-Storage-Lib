@@ -17,7 +17,8 @@ import java.util.function.IntToLongFunction;
 
 /**
  * A simple implementation for fluid storage.
- * This class should be wrapped by a {@link WrappedBlockFluidContainer} or a {@link WrappedItemFluidContainer} to provide the necessary functionality.
+ * This class should be wrapped by a {@link WrappedBlockFluidContainer} or a
+ * {@link WrappedItemFluidContainer} to provide the necessary functionality.
  */
 public class SimpleFluidContainer implements FluidContainer {
     public static final String FLUID_KEY = "StoredFluids";
@@ -43,13 +44,16 @@ public class SimpleFluidContainer implements FluidContainer {
                 if (storedFluid.get(i).isEmpty()) {
                     FluidHolder insertedFluid = fluid.copyHolder();
                     insertedFluid.setAmount((long) Mth.clamp(fluid.getFluidAmount(), 0, maxAmount.applyAsLong(i)));
-                    if (simulate) return insertedFluid.getFluidAmount();
+                    if (simulate)
+                        return insertedFluid.getFluidAmount();
                     this.storedFluid.set(i, insertedFluid);
                     return storedFluid.get(i).getFluidAmount();
                 } else {
                     if (storedFluid.get(i).matches(fluid)) {
-                        long insertedAmount = (long) Mth.clamp(fluid.getFluidAmount(), 0, maxAmount.applyAsLong(i) - storedFluid.get(i).getFluidAmount());
-                        if (simulate) return insertedAmount;
+                        long insertedAmount = (long) Mth.clamp(fluid.getFluidAmount(), 0,
+                                maxAmount.applyAsLong(i) - storedFluid.get(i).getFluidAmount());
+                        if (simulate)
+                            return insertedAmount;
                         this.storedFluid.get(i).setAmount(storedFluid.get(i).getFluidAmount() + insertedAmount);
                         return insertedAmount;
                     }
@@ -67,11 +71,14 @@ public class SimpleFluidContainer implements FluidContainer {
                 if (storedFluid.isEmpty()) {
                     return FluidHolder.empty();
                 } else if (storedFluid.get(i).matches(fluid)) {
-                    long extractedAmount = (long) Mth.clamp(fluid.getFluidAmount(), 0, storedFluid.get(i).getFluidAmount());
+                    long extractedAmount = (long) Mth.clamp(fluid.getFluidAmount(), 0,
+                            storedFluid.get(i).getFluidAmount());
                     toExtract.setAmount(extractedAmount);
-                    if (simulate) return toExtract;
+                    if (simulate)
+                        return toExtract;
                     this.storedFluid.get(i).setAmount(storedFluid.get(i).getFluidAmount() - extractedAmount);
-                    if (storedFluid.get(i).getFluidAmount() == 0) storedFluid.set(i, FluidHolder.empty());
+                    if (storedFluid.get(i).getFluidAmount() == 0)
+                        storedFluid.set(i, FluidHolder.empty());
                     return toExtract;
                 }
             }
@@ -94,7 +101,8 @@ public class SimpleFluidContainer implements FluidContainer {
             long extracted = Mth.clamp(toExtract.getFluidAmount(), 0, fluidHolder.getFluidAmount());
             snapshot.run();
             fluidHolder.setAmount(fluidHolder.getFluidAmount() - extracted);
-            if (fluidHolder.getFluidAmount() == 0) fluidHolder.setFluid(Fluids.EMPTY);
+            if (fluidHolder.getFluidAmount() == 0)
+                fluidHolder.setFluid(Fluids.EMPTY);
             return extracted;
         }
         return 0;
@@ -102,13 +110,15 @@ public class SimpleFluidContainer implements FluidContainer {
 
     @Override
     public long extractFromSlot(int slot, FluidHolder toExtract, boolean simulate) {
-        if (slot < 0 || slot >= this.storedFluid.size()) return 0;
+        if (slot < 0 || slot >= this.storedFluid.size())
+            return 0;
         FluidHolder fluidHolder = this.storedFluid.get(slot);
         if (!fluidHolder.isEmpty() && fluidHolder.matches(toExtract)) {
             long extracted = Mth.clamp(toExtract.getFluidAmount(), 0, fluidHolder.getFluidAmount());
             if (!simulate) {
                 fluidHolder.setAmount(fluidHolder.getFluidAmount() - extracted);
-                if (fluidHolder.getFluidAmount() == 0) fluidHolder.setFluid(Fluids.EMPTY);
+                if (fluidHolder.getFluidAmount() == 0)
+                    fluidHolder.setFluid(Fluids.EMPTY);
                 this.storedFluid.set(slot, fluidHolder);
             }
             return extracted;
@@ -155,7 +165,7 @@ public class SimpleFluidContainer implements FluidContainer {
     }
 
     @Override
-    public void deserialize(CompoundTag root) {
+    public void deserialize(CompoundTag root, net.minecraft.core.HolderLookup.Provider provider) {
         CompoundTag tag = root.getCompound(Botarium.BOTARIUM_DATA);
         ListTag fluids = tag.getList(FLUID_KEY, Tag.TAG_COMPOUND);
         for (int i = 0; i < fluids.size(); i++) {
@@ -165,7 +175,7 @@ public class SimpleFluidContainer implements FluidContainer {
     }
 
     @Override
-    public CompoundTag serialize(CompoundTag root) {
+    public CompoundTag serialize(CompoundTag root, net.minecraft.core.HolderLookup.Provider provider) {
         CompoundTag tag = root.getCompound(Botarium.BOTARIUM_DATA);
         if (!this.storedFluid.isEmpty()) {
             ListTag tags = new ListTag();

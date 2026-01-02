@@ -27,7 +27,8 @@ import java.util.List;
 
 public record PlatformFluidContainer(Storage<FluidVariant> storage) implements FluidContainer {
 
-    public static PlatformFluidContainer of(Level level, BlockPos pos, BlockState state, @Nullable BlockEntity entity, @Nullable Direction direction) {
+    public static PlatformFluidContainer of(Level level, BlockPos pos, BlockState state, @Nullable BlockEntity entity,
+            @Nullable Direction direction) {
         Storage<FluidVariant> storage = FluidStorage.SIDED.find(level, pos, state, entity, direction);
         return storage == null ? null : new PlatformFluidContainer(storage);
     }
@@ -64,7 +65,8 @@ public record PlatformFluidContainer(Storage<FluidVariant> storage) implements F
     @Override
     public List<FluidHolder> getFluids() {
         List<FluidHolder> fluids = new ArrayList<>();
-        storage.iterator().forEachRemaining(variant -> fluids.add(FabricFluidHolder.of(variant.getResource(), variant.getAmount())));
+        storage.iterator().forEachRemaining(
+                variant -> fluids.add(FabricFluidHolder.of(variant.getResource(), variant.getAmount())));
         return fluids;
     }
 
@@ -105,7 +107,8 @@ public record PlatformFluidContainer(Storage<FluidVariant> storage) implements F
         if (storage instanceof SlottedStorage<FluidVariant> slottedStorage) {
             try (Transaction transaction = Transaction.openOuter()) {
                 SingleSlotStorage<FluidVariant> fluidSlot = slottedStorage.getSlot(slot);
-                long extracted = fluidSlot.extract(FabricFluidHolder.of(toExtract).getResource(), toExtract.getFluidAmount(), transaction);
+                long extracted = fluidSlot.extract(FabricFluidHolder.of(toExtract).getResource(),
+                        toExtract.getFluidAmount(), transaction);
                 if (!simulate) {
                     transaction.commit();
                 }
@@ -131,17 +134,18 @@ public record PlatformFluidContainer(Storage<FluidVariant> storage) implements F
     }
 
     @Override
-    public void deserialize(CompoundTag nbt) {
+    public void deserialize(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider provider) {
 
     }
 
     @Override
-    public CompoundTag serialize(CompoundTag nbt) {
+    public CompoundTag serialize(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider provider) {
         return nbt;
     }
 
     @Override
     public void clearContent() {
-        storage.iterator().forEachRemaining(variant -> storage.extract(variant.getResource(), variant.getAmount(), Transaction.openOuter()));
+        storage.iterator().forEachRemaining(
+                variant -> storage.extract(variant.getResource(), variant.getAmount(), Transaction.openOuter()));
     }
 }

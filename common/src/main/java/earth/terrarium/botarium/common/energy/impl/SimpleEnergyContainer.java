@@ -3,12 +3,14 @@ package earth.terrarium.botarium.common.energy.impl;
 import earth.terrarium.botarium.Botarium;
 import earth.terrarium.botarium.common.energy.base.EnergyContainer;
 import earth.terrarium.botarium.common.energy.base.EnergySnapshot;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 
 /**
  * A simple implementation for energy storage.
- * This class should be wrapped by a {@link WrappedBlockEnergyContainer} or a {@link WrappedItemEnergyContainer} to provide the necessary functionality.
+ * This class should be wrapped by a {@link WrappedBlockEnergyContainer} or a
+ * {@link WrappedItemEnergyContainer} to provide the necessary functionality.
  */
 public class SimpleEnergyContainer implements EnergyContainer {
     private final long capacity;
@@ -33,7 +35,8 @@ public class SimpleEnergyContainer implements EnergyContainer {
     @Override
     public long insertEnergy(long maxAmount, boolean simulate) {
         long inserted = (long) Mth.clamp(maxAmount, 0, Math.min(maxInsert(), getMaxCapacity() - getStoredEnergy()));
-        if (simulate) return inserted;
+        if (simulate)
+            return inserted;
         this.setEnergy(this.energy + inserted);
         return inserted;
     }
@@ -41,7 +44,8 @@ public class SimpleEnergyContainer implements EnergyContainer {
     @Override
     public long extractEnergy(long maxAmount, boolean simulate) {
         long extracted = (long) Mth.clamp(maxAmount, 0, Math.min(maxExtract(), getStoredEnergy()));
-        if (simulate) return extracted;
+        if (simulate)
+            return extracted;
         this.setEnergy(this.energy - extracted);
         return extracted;
     }
@@ -49,7 +53,8 @@ public class SimpleEnergyContainer implements EnergyContainer {
     @Override
     public long internalInsert(long maxAmount, boolean simulate) {
         long inserted = (long) Mth.clamp(maxAmount, 0, getMaxCapacity() - getStoredEnergy());
-        if (simulate) return inserted;
+        if (simulate)
+            return inserted;
         this.setEnergy(this.energy + inserted);
         return inserted;
     }
@@ -57,7 +62,8 @@ public class SimpleEnergyContainer implements EnergyContainer {
     @Override
     public long internalExtract(long maxAmount, boolean simulate) {
         long extracted = (long) Mth.clamp(maxAmount, 0, getStoredEnergy());
-        if (simulate) return extracted;
+        if (simulate)
+            return extracted;
         this.setEnergy(this.energy - extracted);
         return extracted;
     }
@@ -88,17 +94,14 @@ public class SimpleEnergyContainer implements EnergyContainer {
     }
 
     @Override
-    public CompoundTag serialize(CompoundTag root) {
-        CompoundTag tag = root.getCompound(Botarium.BOTARIUM_DATA);
-        tag.putLong("Energy", this.energy);
-        root.put(Botarium.BOTARIUM_DATA, tag);
-        return root;
+    public CompoundTag serialize(CompoundTag nbt, HolderLookup.Provider provider) {
+        nbt.putLong("Energy", this.energy);
+        return nbt;
     }
 
     @Override
-    public void deserialize(CompoundTag root) {
-        CompoundTag tag = root.getCompound(Botarium.BOTARIUM_DATA);
-        this.energy = tag.getLong("Energy");
+    public void deserialize(CompoundTag nbt, HolderLookup.Provider provider) {
+        this.energy = nbt.getLong("Energy");
     }
 
     @Override

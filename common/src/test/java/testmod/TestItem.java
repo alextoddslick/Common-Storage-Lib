@@ -25,7 +25,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class TestItem extends Item implements BotariumEnergyItem<WrappedItemEnergyContainer>, BotariumFluidItem<WrappedItemFluidContainer> {
+public class TestItem extends Item
+        implements BotariumEnergyItem<WrappedItemEnergyContainer>, BotariumFluidItem<WrappedItemFluidContainer> {
     public TestItem(Properties properties) {
         super(properties);
     }
@@ -41,38 +42,45 @@ public class TestItem extends Item implements BotariumEnergyItem<WrappedItemEner
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag tooltipFlag) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip,
+            TooltipFlag tooltipFlag) {
         ItemStackHolder holder = new ItemStackHolder(stack);
         ItemFluidContainer itemFluidManager = FluidContainer.of(holder);
         if (itemFluidManager != null) {
             long oxygen = FluidConstants.toMillibuckets(itemFluidManager.getFluids().get(0).getFluidAmount());
             long oxygenCapacity = itemFluidManager.getTankCapacity(0);
-            tooltip.add(Component.literal("Water: " + oxygen + "mb / " + oxygenCapacity + "mb").setStyle(Style.EMPTY.withColor(ChatFormatting.GRAY)));
+            tooltip.add(Component.literal("Water: " + oxygen + "mb / " + oxygenCapacity + "mb")
+                    .setStyle(Style.EMPTY.withColor(ChatFormatting.GRAY)));
         }
 
         EnergyContainer energyManager = EnergyContainer.of(holder);
         if (energyManager != null) {
             long energy = energyManager.getStoredEnergy();
             long energyCapacity = energyManager.getMaxCapacity();
-            tooltip.add(Component.literal("Energy: " + energy + "FE / " + energyCapacity + "FE").setStyle(Style.EMPTY.withColor(ChatFormatting.GRAY)));
+            tooltip.add(Component.literal("Energy: " + energy + "FE / " + energyCapacity + "FE")
+                    .setStyle(Style.EMPTY.withColor(ChatFormatting.GRAY)));
         }
 
         ManaContainerItem manaContainer = TestMod.MANA_ITEM_LOOKUP.find(stack, null);
         if (manaContainer != null) {
             long mana = manaContainer.getStoredAmount();
             long manaCapacity = manaContainer.getCapacity();
-            tooltip.add(Component.literal("Mana: " + mana + " / " + manaCapacity).setStyle(Style.EMPTY.withColor(ChatFormatting.GRAY)));
+            tooltip.add(Component.literal("Mana: " + mana + " / " + manaCapacity)
+                    .setStyle(Style.EMPTY.withColor(ChatFormatting.GRAY)));
         }
 
         if (TestMod.MANA_DATA.hasData(stack)) {
             ManaContainer dataMana = TestMod.MANA_DATA.getData(stack);
-            tooltip.add(Component.literal("Mana DATA: " + dataMana.storedAmount + " / " + dataMana.getCapacity()).setStyle(Style.EMPTY.withColor(ChatFormatting.GRAY)));
+            tooltip.add(Component.literal("Mana DATA: " + dataMana.storedAmount + " / " + dataMana.getCapacity())
+                    .setStyle(Style.EMPTY.withColor(ChatFormatting.GRAY)));
         }
     }
 
     /*
-     * Tests fluid transfer between 2 test items. To use, fill 1 test item with water and put it in the mainhand.
-     * Then put another empty test item in the offhand. then right click to transfer from the mainhand to the
+     * Tests fluid transfer between 2 test items. To use, fill 1 test item with
+     * water and put it in the mainhand.
+     * Then put another empty test item in the offhand. then right click to transfer
+     * from the mainhand to the
      * offhand and print the offhand amount.
      */
     @Override
@@ -85,7 +93,7 @@ public class TestItem extends Item implements BotariumEnergyItem<WrappedItemEner
             if (energyManager != null) {
                 energyManager.setEnergy(100000);
             }
-            TestMod.MANA_DATA.getDataOrInit(stack).insert(100, false);
+            TestMod.MANA_DATA.getDataOrInit(stack, new ManaContainer()).insert(100, false);
         }
         return InteractionResultHolder.success(player.getMainHandItem());
     }

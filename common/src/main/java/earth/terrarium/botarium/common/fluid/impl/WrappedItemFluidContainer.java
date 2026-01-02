@@ -6,23 +6,28 @@ import earth.terrarium.botarium.common.fluid.base.FluidSnapshot;
 import earth.terrarium.botarium.common.fluid.base.ItemFluidContainer;
 import earth.terrarium.botarium.util.Updatable;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 
 /**
  * Represents a wrapped fluid container for an item.
- * This class implements the FluidContainer interface and the Updatable interface.
- * It delegates fluid-related operations to the wrapped fluid container, and updates the item when the fluid is changed.
+ * This class implements the FluidContainer interface and the Updatable
+ * interface.
+ * It delegates fluid-related operations to the wrapped fluid container, and
+ * updates the item when the fluid is changed.
  *
  * @param stack     The item stack.
- * @param container The wrapped fluid container. Botarium provides a default implementation for this with {@link SimpleFluidContainer}.
+ * @param container The wrapped fluid container. Botarium provides a default
+ *                  implementation for this with {@link SimpleFluidContainer}.
  */
 public record WrappedItemFluidContainer(ItemStack stack,
-                                        FluidContainer container) implements ItemFluidContainer, Updatable {
+        FluidContainer container) implements ItemFluidContainer, Updatable {
 
     public WrappedItemFluidContainer {
-        container.deserialize(stack.getOrCreateTag());
+        container.deserialize(stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag(), null);
     }
 
     @Override
@@ -33,7 +38,8 @@ public record WrappedItemFluidContainer(ItemStack stack,
     @Override
     public long internalInsert(FluidHolder fluids, boolean simulate) {
         long inserted = container.internalInsert(fluids, simulate);
-        if (!simulate) update();
+        if (!simulate)
+            update();
         return inserted;
     }
 
@@ -45,7 +51,8 @@ public record WrappedItemFluidContainer(ItemStack stack,
     @Override
     public FluidHolder internalExtract(FluidHolder fluid, boolean simulate) {
         FluidHolder extracted = container.internalExtract(fluid, simulate);
-        if (!simulate) update();
+        if (!simulate)
+            update();
         return extracted;
     }
 
@@ -126,18 +133,18 @@ public record WrappedItemFluidContainer(ItemStack stack,
     }
 
     @Override
-    public void deserialize(CompoundTag nbt) {
-        container.deserialize(nbt);
+    public void deserialize(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider provider) {
+        container.deserialize(nbt, provider);
     }
 
     @Override
-    public CompoundTag serialize(CompoundTag nbt) {
-        return container.serialize(nbt);
+    public CompoundTag serialize(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider provider) {
+        return container.serialize(nbt, provider);
     }
 
     @Override
     public void update() {
-        serialize(stack.getOrCreateTag());
+        CustomData.update(DataComponents.CUSTOM_DATA, stack, tag -> serialize(tag, null));
     }
 
     @Override

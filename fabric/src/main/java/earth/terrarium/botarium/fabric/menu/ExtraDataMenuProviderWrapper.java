@@ -10,7 +10,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import org.jetbrains.annotations.Nullable;
 
-public class ExtraDataMenuProviderWrapper implements ExtendedScreenHandlerFactory {
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+
+public class ExtraDataMenuProviderWrapper implements ExtendedScreenHandlerFactory<FriendlyByteBuf> {
     private final ExtraDataMenuProvider provider;
 
     public ExtraDataMenuProviderWrapper(ExtraDataMenuProvider provider) {
@@ -18,8 +20,10 @@ public class ExtraDataMenuProviderWrapper implements ExtendedScreenHandlerFactor
     }
 
     @Override
-    public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
+    public FriendlyByteBuf getScreenOpeningData(ServerPlayer player) {
+        FriendlyByteBuf buf = PacketByteBufs.create();
         provider.writeExtraData(player, buf);
+        return buf;
     }
 
     @Override

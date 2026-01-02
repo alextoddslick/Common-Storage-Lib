@@ -32,7 +32,7 @@ public class FabricRegistryHelper<V> {
 
     @ImplementsBaseElement
     public <T extends V> Supplier<T> register(String id, Supplier<T> object) {
-        var register = Registry.register(registry, new ResourceLocation(modid, id), object.get());
+        var register = Registry.register(registry, ResourceLocation.fromNamespaceAndPath(modid, id), object.get());
         entries.add(Suppliers.memoize(() -> register));
         return () -> register;
     }
@@ -44,6 +44,7 @@ public class FabricRegistryHelper<V> {
 
     @ImplementsBaseElement
     public void initialize() {
-        //Its empty because i love. also because fabric registers when register is called. and also because i love <3
+        // Its empty because i love. also because fabric registers when register is
+        // called. and also because i love <3
     }
 }
