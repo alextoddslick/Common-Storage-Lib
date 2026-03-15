@@ -12,7 +12,7 @@ import earth.terrarium.common_storage_lib.resources.util.CodecUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
 
@@ -24,7 +24,7 @@ import java.util.List;
 public class BaseFluidIngredient implements FluidIngredient {
     public static final Codec<BaseFluidIngredient> CODEC = CodecUtils.listAndObjectCodec(Value.CODEC).xmap(BaseFluidIngredient::new, BaseFluidIngredient::values);
     public static final MapCodec<BaseFluidIngredient> MAP_CODEC = CODEC.fieldOf("values");
-    public static final FluidIngredientType<BaseFluidIngredient> TYPE = new FluidIngredientType<>(ResourceLocation.fromNamespaceAndPath(ResourceLib.MOD_ID, "base"), MAP_CODEC);
+    public static final FluidIngredientType<BaseFluidIngredient> TYPE = new FluidIngredientType<>(Identifier.fromNamespaceAndPath(ResourceLib.MOD_ID, "base"), MAP_CODEC);
 
     private final List<Value> values;
     private List<FluidResource> matchingFluids;

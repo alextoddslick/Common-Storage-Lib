@@ -75,10 +75,11 @@ public class PlayerContainer extends AbstractVanillaContainer implements UpdateM
 
     public StorageSlot<ItemResource> getHandSlot(InteractionHand hand) {
         if (hand == InteractionHand.MAIN_HAND) {
-            if (Inventory.isHotbarSlot(inventory.selected)) {
-                return get(inventory.selected);
+            int sel = inventory.getSelectedSlot();
+            if (Inventory.isHotbarSlot(sel)) {
+                return get(sel);
             } else {
-                throw new IllegalArgumentException("Main hand is not a hotbar slot: " + inventory.selected);
+                throw new IllegalArgumentException("Main hand is not a hotbar slot: " + sel);
             }
         } else if (hand == InteractionHand.OFF_HAND) {
             return get(Inventory.SLOT_OFFHAND);

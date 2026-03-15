@@ -16,7 +16,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.energy.IEnergyStorage;
-import org.jetbrains.annotations.Nullable;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,11 +34,15 @@ public final class EnergyBlockLookup implements BlockLookup<ValueStorage, Direct
     @Override
     @SuppressWarnings("DataFlowIssue")
     public @Nullable ValueStorage find(Level level, BlockPos pos, @Nullable BlockState state, @Nullable BlockEntity entity, @Nullable Direction direction) {
-        IEnergyStorage storage = level.getCapability(Capabilities.EnergyStorage.BLOCK, pos, state, entity, direction);
-        if (storage instanceof NeoEnergyContainer(ValueStorage container)) {
+        EnergyHandler handler = level.getCapability(Capabilities.Energy.BLOCK, pos, state, entity, direction);
+        if (handler instanceof NeoEnergyContainer(ValueStorage container)) {
             return new AutoUpdatingValueStorage(container);
         }
-        return storage == null ? null : new CommonEnergyStorage(storage);
+        if (handler != null) {
+            IEnergyStorage storage = IEnergyStorage.of(handler);
+            return new CommonEnergyStorage(storage);
+        }
+        return null;
     }
 
     @Override
@@ -59,7 +64,7 @@ public final class EnergyBlockLookup implements BlockLookup<ValueStorage, Direct
         @Override
         public void registerBlocks(BlockLookup.BlockGetter<ValueStorage, Direction> getter, Block... containers) {
             for (Block block : containers) {
-                event.registerBlock(Capabilities.EnergyStorage.BLOCK, (level, pos, state, entity, direction) -> {
+                event.registerBlock(Capabilities.Energy.BLOCK, (level, pos, state, entity, direction) -> {
                     ValueStorage storage = getter.getContainer(level, pos, state, entity, direction);
                     return storage == null ? null : new NeoEnergyContainer(storage);
                 }, block);
@@ -69,7 +74,7 @@ public final class EnergyBlockLookup implements BlockLookup<ValueStorage, Direct
         @Override
         public void registerBlockEntities(BlockLookup.BlockEntityGetter<ValueStorage, Direction> getter, BlockEntityType<?>... containers) {
             for (BlockEntityType<?> blockEntity : containers) {
-                event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, blockEntity, (entity, direction) -> {
+                event.registerBlockEntity(Capabilities.Energy.BLOCK, blockEntity, (entity, direction) -> {
                     ValueStorage storage = getter.getContainer(entity, direction);
                     return storage == null ? null : new NeoEnergyContainer(storage);
                 });

@@ -6,7 +6,7 @@ import earth.terrarium.common_storage_lib.storage.base.StorageSlot;
 import earth.terrarium.common_storage_lib.storage.util.TransferUtil;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 public record CommonItemContainer(IItemHandler handler) implements CommonStorage<ItemResource> {
     @Override
@@ -15,7 +15,7 @@ public record CommonItemContainer(IItemHandler handler) implements CommonStorage
     }
 
     @Override
-    public @NotNull StorageSlot<ItemResource> get(int index) {
+    public @NonNull StorageSlot<ItemResource> get(int index) {
         return new DelegatingItemSlot(handler, index);
     }
 

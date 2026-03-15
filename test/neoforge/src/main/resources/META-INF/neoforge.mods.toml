@@ -14,13 +14,13 @@ description = "A test mod for Common Storage Lib"
 [[dependencies.test_mod]]
 modId = "neoforge"
 type = "required"
-versionRange = "[20,)"
+versionRange = "[21.11,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.test_mod]]
 modId = "minecraft"
 type = "required"
-versionRange = "[1.20.6,)"
+versionRange = "[1.21.11,)"
 ordering = "NONE"
 side = "BOTH"

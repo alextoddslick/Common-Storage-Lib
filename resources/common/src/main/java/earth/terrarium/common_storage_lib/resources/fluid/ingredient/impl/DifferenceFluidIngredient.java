@@ -6,7 +6,7 @@ import earth.terrarium.common_storage_lib.resources.ResourceLib;
 import earth.terrarium.common_storage_lib.resources.fluid.FluidResource;
 import earth.terrarium.common_storage_lib.resources.fluid.ingredient.FluidIngredient;
 import earth.terrarium.common_storage_lib.resources.fluid.ingredient.FluidIngredientType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +17,7 @@ public record DifferenceFluidIngredient(FluidIngredient minuend, FluidIngredient
             FluidIngredient.CODEC.fieldOf("subtrahend").forGetter(DifferenceFluidIngredient::subtrahend)
     ).apply(instance, DifferenceFluidIngredient::new));
 
-    public static final FluidIngredientType<DifferenceFluidIngredient> TYPE = new FluidIngredientType<>(ResourceLocation.fromNamespaceAndPath(ResourceLib.MOD_ID, "difference"), CODEC);
+    public static final FluidIngredientType<DifferenceFluidIngredient> TYPE = new FluidIngredientType<>(Identifier.fromNamespaceAndPath(ResourceLib.MOD_ID, "difference"), CODEC);
 
     @Override
     public List<FluidResource> getMatchingFluids() {

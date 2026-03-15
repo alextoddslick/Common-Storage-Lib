@@ -3,7 +3,7 @@ package earth.terrarium.common_storage_lib.lookup.impl;
 import earth.terrarium.common_storage_lib.lookup.BlockLookup;
 import earth.terrarium.common_storage_lib.lookup.RegistryEventListener;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -11,7 +11,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +25,7 @@ public class NeoBlockLookup<T, C> implements BlockLookup<T, C>, RegistryEventLis
         this.capability = capability;
     }
 
-    public NeoBlockLookup(ResourceLocation id, Class<T> type, Class<C> contextType) {
+    public NeoBlockLookup(Identifier id, Class<T> type, Class<C> contextType) {
         this(BlockCapability.create(id, type, contextType));
     }
 

@@ -10,7 +10,7 @@ import earth.terrarium.common_storage_lib.storage.fabric.FabricLongStorage;
 import earth.terrarium.common_storage_lib.storage.base.ValueStorage;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import team.reborn.energy.api.EnergyStorage;
 
 import java.util.function.Consumer;

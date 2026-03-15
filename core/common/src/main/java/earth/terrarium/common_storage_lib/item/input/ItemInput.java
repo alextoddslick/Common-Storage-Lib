@@ -24,7 +24,7 @@ public record ItemInput(Ingredient ingredient, ItemConsumer consumer, Stream<Ite
     );
 
     public ItemInput(Ingredient ingredient, ItemConsumer consumer) {
-        this(ingredient, consumer, Stream.of(ingredient.getItems()).map(consumer::modifyDisplay));
+        this(ingredient, consumer, ingredient.items().map(holder -> new ItemStack(holder)).map(consumer::modifyDisplay));
     }
 
     public boolean test(ItemStack stack, ItemContext context) {

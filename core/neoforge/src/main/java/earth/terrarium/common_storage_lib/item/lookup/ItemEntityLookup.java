@@ -14,32 +14,37 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.EntityCapability;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.items.IItemHandler;
-import org.jetbrains.annotations.Nullable;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
 public final class ItemEntityLookup<C> implements EntityLookup<CommonStorage<ItemResource>, C>, RegistryEventListener {
-    public static final ItemEntityLookup<Void> INSTANCE = new ItemEntityLookup<>(Capabilities.ItemHandler.ENTITY);
-    public static final ItemEntityLookup<Direction> AUTOMATION = new ItemEntityLookup<>(Capabilities.ItemHandler.ENTITY_AUTOMATION);
+    public static final ItemEntityLookup<Void> INSTANCE = new ItemEntityLookup<>(Capabilities.Item.ENTITY);
+    public static final ItemEntityLookup<Direction> AUTOMATION = new ItemEntityLookup<>(Capabilities.Item.ENTITY_AUTOMATION);
 
     private final List<Consumer<EntityRegistrar<CommonStorage<ItemResource>, C>>> registrars = new ArrayList<>();
-    private final EntityCapability<IItemHandler, C> capability;
+    private final EntityCapability<ResourceHandler<net.neoforged.neoforge.transfer.item.ItemResource>, C> capability;
 
-    private ItemEntityLookup(EntityCapability<IItemHandler, C> capability) {
+    private ItemEntityLookup(EntityCapability<ResourceHandler<net.neoforged.neoforge.transfer.item.ItemResource>, C> capability) {
         this.capability = capability;
         registerSelf();
     }
 
     @Override
     public @Nullable CommonStorage<ItemResource> find(Entity entity, C context) {
-        IItemHandler handler = entity.getCapability(capability, context);
+        ResourceHandler<net.neoforged.neoforge.transfer.item.ItemResource> handler = entity.getCapability(capability, context);
         if (handler instanceof NeoItemHandler(CommonStorage<ItemResource> container)) {
             return new AutoUpdatingCommonStorage<>(container);
         }
 
-        return handler == null ? null : new CommonItemContainer(handler);
+        if (handler != null) {
+            IItemHandler legacyHandler = IItemHandler.of(handler);
+            return new CommonItemContainer(legacyHandler);
+        }
+        return null;
     }
 
     @Override

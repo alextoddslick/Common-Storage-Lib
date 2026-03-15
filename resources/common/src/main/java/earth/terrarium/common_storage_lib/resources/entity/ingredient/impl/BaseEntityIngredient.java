@@ -12,7 +12,7 @@ import earth.terrarium.common_storage_lib.resources.util.CodecUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 
@@ -24,7 +24,7 @@ import java.util.List;
 public class BaseEntityIngredient implements EntityIngredient {
     public static final Codec<BaseEntityIngredient> CODEC = CodecUtils.listAndObjectCodec(Value.CODEC).xmap(BaseEntityIngredient::new, BaseEntityIngredient::values);
     public static final MapCodec<BaseEntityIngredient> MAP_CODEC = CODEC.fieldOf("values");
-    public static final EntityIngredientType<BaseEntityIngredient> TYPE = new EntityIngredientType<>(ResourceLocation.fromNamespaceAndPath(ResourceLib.MOD_ID, "base"), MAP_CODEC);
+    public static final EntityIngredientType<BaseEntityIngredient> TYPE = new EntityIngredientType<>(Identifier.fromNamespaceAndPath(ResourceLib.MOD_ID, "base"), MAP_CODEC);
 
     private final List<Value> values;
     private List<EntityResource> matchingEntitys;

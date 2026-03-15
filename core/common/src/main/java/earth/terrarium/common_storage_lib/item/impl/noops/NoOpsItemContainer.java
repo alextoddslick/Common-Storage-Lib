@@ -3,7 +3,7 @@ package earth.terrarium.common_storage_lib.item.impl.noops;
 import earth.terrarium.common_storage_lib.resources.item.ItemResource;
 import earth.terrarium.common_storage_lib.storage.base.CommonStorage;
 import earth.terrarium.common_storage_lib.storage.base.StorageSlot;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 public final class NoOpsItemContainer implements CommonStorage<ItemResource> {
     public static final NoOpsItemContainer NO_OPS = new NoOpsItemContainer();
@@ -14,7 +14,7 @@ public final class NoOpsItemContainer implements CommonStorage<ItemResource> {
     }
 
     @Override
-    public @NotNull StorageSlot<ItemResource> get(int index) {
+    public @NonNull StorageSlot<ItemResource> get(int index) {
         return NoOpsItemSlot.NO_OPS;
     }
 

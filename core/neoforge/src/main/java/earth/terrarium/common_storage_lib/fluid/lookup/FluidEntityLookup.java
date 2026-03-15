@@ -12,7 +12,8 @@ import net.minecraft.world.entity.Entity;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import org.jetbrains.annotations.Nullable;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,13 +29,17 @@ public final class FluidEntityLookup implements EntityLookup<CommonStorage<Fluid
 
     @Override
     public @Nullable CommonStorage<FluidResource> find(Entity entity, Direction context) {
-        IFluidHandler handler = entity.getCapability(Capabilities.FluidHandler.ENTITY, context);
+        ResourceHandler<net.neoforged.neoforge.transfer.fluid.FluidResource> handler = entity.getCapability(Capabilities.Fluid.ENTITY, context);
 
         if (handler instanceof NeoFluidContainer(CommonStorage<FluidResource> container)) {
             return new AutoUpdatingCommonStorage<>(container);
         }
 
-        return handler == null ? null : new CommonFluidContainer(handler);
+        if (handler != null) {
+            IFluidHandler legacyHandler = IFluidHandler.of(handler);
+            return new CommonFluidContainer(legacyHandler);
+        }
+        return null;
     }
 
     @Override
@@ -46,7 +51,7 @@ public final class FluidEntityLookup implements EntityLookup<CommonStorage<Fluid
     public void register(RegisterCapabilitiesEvent event) {
         registrars.forEach(registrar -> registrar.accept((getter, containers) -> {
             for (var container : containers) {
-                event.registerEntity(Capabilities.FluidHandler.ENTITY, container, (entity, direction) -> {
+                event.registerEntity(Capabilities.Fluid.ENTITY, container, (entity, direction) -> {
                     CommonStorage<FluidResource> storage = getter.getContainer(entity, direction);
                     return storage == null ? null : new NeoFluidContainer(storage);
                 });

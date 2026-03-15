@@ -3,14 +3,14 @@ package earth.terrarium.common_storage_lib.lookup;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.msrandom.multiplatform.annotations.Expect;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -19,9 +19,9 @@ import java.util.function.Predicate;
 public interface BlockLookup<T, C> {
 
     @Expect
-    static <T, C> BlockLookup<T, C> create(ResourceLocation name, Class<T> typeClass, Class<C> contextClass);
+    static <T, C> BlockLookup<T, C> create(Identifier name, Class<T> typeClass, Class<C> contextClass);
 
-    static <T> BlockLookup<T, @Nullable Direction> create(ResourceLocation name, Class<T> typeClass) {
+    static <T> BlockLookup<T, @Nullable Direction> create(Identifier name, Class<T> typeClass) {
         return create(name, typeClass, Direction.class);
     }
 

@@ -5,14 +5,14 @@ import earth.terrarium.common_storage_lib.resources.ResourceLib;
 import earth.terrarium.common_storage_lib.resources.fluid.FluidResource;
 import earth.terrarium.common_storage_lib.resources.fluid.ingredient.FluidIngredient;
 import earth.terrarium.common_storage_lib.resources.fluid.ingredient.FluidIngredientType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public record AllMatchFluidIngredient(List<FluidIngredient> children) implements ListFluidIngredient {
     public static final MapCodec<AllMatchFluidIngredient> CODEC = FluidIngredient.CODEC.listOf().fieldOf("children").xmap(AllMatchFluidIngredient::new, AllMatchFluidIngredient::children);
-    public static final FluidIngredientType<AllMatchFluidIngredient> TYPE = new FluidIngredientType<>(ResourceLocation.fromNamespaceAndPath(ResourceLib.MOD_ID, "all_match"), CODEC);
+    public static final FluidIngredientType<AllMatchFluidIngredient> TYPE = new FluidIngredientType<>(Identifier.fromNamespaceAndPath(ResourceLib.MOD_ID, "all_match"), CODEC);
 
     @Override
     public boolean test(FluidResource fluidResource) {

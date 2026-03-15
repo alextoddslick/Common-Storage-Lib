@@ -1,7 +1,7 @@
 package earth.terrarium.common_storage_lib.resources;
 
 import net.minecraft.core.component.*;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Map;
 import java.util.Objects;
@@ -21,7 +21,7 @@ public abstract class ResourceComponent implements Resource, DataComponentHolder
     }
 
     @Override
-    public @NotNull DataComponentMap getComponents() {
+    public @NonNull DataComponentMap getComponents() {
         return components;
     }
 

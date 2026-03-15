@@ -11,7 +11,7 @@ import net.minecraft.core.component.DataComponentHolder;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponentType;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 public interface ItemContext extends StorageIO<ItemResource>, DataComponentHolder {
     default <T> T find(ItemLookup<T, ItemContext> lookup) {
@@ -64,7 +64,7 @@ public interface ItemContext extends StorageIO<ItemResource>, DataComponentHolde
     }
 
     @Override
-    default @NotNull DataComponentMap getComponents() {
+    default @NonNull DataComponentMap getComponents() {
         return getResource().getComponents();
     }
 

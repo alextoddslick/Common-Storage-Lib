@@ -2,12 +2,12 @@ package earth.terrarium.common_storage_lib.lookup.impl;
 
 import earth.terrarium.common_storage_lib.lookup.EntityLookup;
 import earth.terrarium.common_storage_lib.lookup.RegistryEventListener;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.neoforged.neoforge.capabilities.EntityCapability;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +21,7 @@ public class NeoEntityLookup<T, C> implements EntityLookup<T, C>, RegistryEventL
         this.capability = capability;
     }
 
-    public NeoEntityLookup(ResourceLocation id, Class<T> type, Class<C> contextType) {
+    public NeoEntityLookup(Identifier id, Class<T> type, Class<C> contextType) {
         this(EntityCapability.create(id, type, contextType));
     }
 

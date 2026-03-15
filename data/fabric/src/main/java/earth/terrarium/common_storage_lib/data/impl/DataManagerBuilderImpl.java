@@ -13,7 +13,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.function.Supplier;
 
@@ -67,7 +67,7 @@ public class DataManagerBuilderImpl<T> implements DataManagerBuilder<T> {
 
     @Override
     public DataManager<T> buildAndRegister(String name) {
-        ResourceLocation id = ResourceLocation.fromNamespaceAndPath(modid, name);
+        Identifier id = Identifier.fromNamespaceAndPath(modid, name);
         AttachmentType<T> tAttachmentType = this.builder.buildAndRegister(id);
         DataSyncSerializer<T> serializer = null;
         if (syncToClient) {

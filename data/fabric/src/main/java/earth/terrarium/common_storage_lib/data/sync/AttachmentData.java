@@ -3,8 +3,8 @@ package earth.terrarium.common_storage_lib.data.sync;
 import earth.terrarium.common_storage_lib.data.FabricDataLib;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.resources.Identifier;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,11 +20,11 @@ public record AttachmentData<T>(DataSyncSerializer<T> serializer, @Nullable T da
     }
 
     public void encode(RegistryFriendlyByteBuf buf) {
-        ResourceLocation key = FabricDataLib.SYNC_SERIALIZERS.getKey(serializer);
+        Identifier key = FabricDataLib.SYNC_SERIALIZERS.getKey(serializer);
         if (key == null) {
             throw new IllegalStateException("Unknown sync serializer: " + serializer);
         }
-        buf.writeResourceLocation(key);
+        buf.writeIdentifier(key);
         if (data == null) {
             buf.writeBoolean(false);
         } else {

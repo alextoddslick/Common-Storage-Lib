@@ -27,7 +27,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 public class TransferTestItem extends Item implements EnergyProvider.Item, FluidProvider.Item, ItemProvider.Item {
     public TransferTestItem(Properties properties) {
@@ -35,10 +35,10 @@ public class TransferTestItem extends Item implements EnergyProvider.Item, Fluid
     }
 
     @Override
-    public @NotNull InteractionResult useOn(UseOnContext context) {
+    public @NonNull InteractionResult useOn(UseOnContext context) {
         Level level = context.getLevel();
 
-        if (level.isClientSide) {
+        if (!(level instanceof net.minecraft.server.level.ServerLevel)) {
             return InteractionResult.SUCCESS;
         }
 

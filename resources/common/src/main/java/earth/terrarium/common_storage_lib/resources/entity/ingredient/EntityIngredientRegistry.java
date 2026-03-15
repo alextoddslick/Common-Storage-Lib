@@ -5,16 +5,16 @@ import com.mojang.serialization.DataResult;
 import earth.terrarium.common_storage_lib.resources.entity.ingredient.impl.*;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 public class EntityIngredientRegistry {
-    public static final Map<ResourceLocation, EntityIngredientType<?>> INGREDIENT_TYPES = new HashMap<>();
-    public static final Codec<EntityIngredientType<?>> TYPE_CODEC = ResourceLocation.CODEC.comapFlatMap(EntityIngredientRegistry::decode, EntityIngredientType::id);
-    public static final StreamCodec<ByteBuf, EntityIngredientType<?>> STREAM_CODEC = ResourceLocation.STREAM_CODEC.map(INGREDIENT_TYPES::get, EntityIngredientType::id);
+    public static final Map<Identifier, EntityIngredientType<?>> INGREDIENT_TYPES = new HashMap<>();
+    public static final Codec<EntityIngredientType<?>> TYPE_CODEC = Identifier.CODEC.comapFlatMap(EntityIngredientRegistry::decode, EntityIngredientType::id);
+    public static final StreamCodec<ByteBuf, EntityIngredientType<?>> STREAM_CODEC = Identifier.STREAM_CODEC.map(INGREDIENT_TYPES::get, EntityIngredientType::id);
 
     public static void init() {}
 
@@ -30,7 +30,7 @@ public class EntityIngredientRegistry {
         INGREDIENT_TYPES.put(type.id(), type);
     }
 
-    private static DataResult<? extends EntityIngredientType<?>> decode(ResourceLocation id) {
+    private static DataResult<? extends EntityIngredientType<?>> decode(Identifier id) {
         return Optional.ofNullable(INGREDIENT_TYPES.get(id)).map(DataResult::success).orElse(DataResult.error(() -> "No ritual component type found."));
     }
 }

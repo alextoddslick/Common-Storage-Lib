@@ -5,12 +5,12 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import earth.terrarium.common_storage_lib.resources.fluid.FluidResource;
 import earth.terrarium.common_storage_lib.resources.fluid.ingredient.impl.*;
-import net.minecraft.core.component.DataComponentPredicate;
+import net.minecraft.core.component.DataComponentExactPredicate;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Arrays;
 import java.util.List;
@@ -32,7 +32,7 @@ public interface FluidIngredient extends Predicate<FluidResource> {
         }
 
         @Override
-        public @NotNull FluidIngredient decode(RegistryFriendlyByteBuf regByteBuf) {
+        public @NonNull FluidIngredient decode(RegistryFriendlyByteBuf regByteBuf) {
             FluidIngredientType<?> fluidIngredientType = FluidIngredientType.STREAM_CODEC.decode(regByteBuf);
             return fluidIngredientType.streamCodec().decode(regByteBuf);
         }
@@ -58,7 +58,7 @@ public interface FluidIngredient extends Predicate<FluidResource> {
         return new DifferenceFluidIngredient(minuend, subtrahend);
     }
 
-    static FluidIngredient components(FluidIngredient base, DataComponentPredicate components) {
+    static FluidIngredient components(FluidIngredient base, DataComponentExactPredicate components) {
         return new ComponentFluidIngredient(base, components);
     }
 

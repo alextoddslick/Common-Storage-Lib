@@ -15,12 +15,12 @@ import net.minecraft.core.Registry;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.resources.Identifier;
+import org.jspecify.annotations.NonNull;
 
 public class FabricDataLib implements ModInitializer {
     public static final String MOD_ID = "common_storage_lib_data";
-    public static final ResourceKey<Registry<DataSyncSerializer<?>>> SYNC_SERIALIZERS_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(MOD_ID, "sync_serializers"));
+    public static final ResourceKey<Registry<DataSyncSerializer<?>>> SYNC_SERIALIZERS_KEY = ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath(MOD_ID, "sync_serializers"));
     public static final Registry<DataSyncSerializer<?>> SYNC_SERIALIZERS = FabricRegistryBuilder.createSimple(SYNC_SERIALIZERS_KEY).buildAndRegister();
     public static StreamCodec<RegistryFriendlyByteBuf, AttachmentData<?>> SYNC_SERIALIZER_STREAM_CODEC = new StreamCodec<>() {
         @Override
@@ -29,12 +29,11 @@ public class FabricDataLib implements ModInitializer {
         }
 
         @Override
-        public @NotNull AttachmentData<?> decode(RegistryFriendlyByteBuf object) {
-            ResourceLocation key = object.readResourceLocation();
-            DataSyncSerializer<?> serializer = SYNC_SERIALIZERS.get(key);
-            if (serializer == null) {
-                throw new IllegalStateException("Unknown sync serializer: " + key);
-            }
+        public @NonNull AttachmentData<?> decode(RegistryFriendlyByteBuf object) {
+            Identifier key = object.readIdentifier();
+            DataSyncSerializer<?> serializer = SYNC_SERIALIZERS.get(key)
+                    .orElseThrow(() -> new IllegalStateException("Unknown sync serializer: " + key))
+                    .value();
             return serializer.decode(object);
         }
     };

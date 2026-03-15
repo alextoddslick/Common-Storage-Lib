@@ -17,13 +17,13 @@ config = "common_storage_lib_data.mixins.json"
 [[dependencies.common_storage_lib_data]]
 modId = "neoforge"
 type = "required"
-versionRange = "[20,)"
+versionRange = "[21.11,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.common_storage_lib_data]]
 modId = "minecraft"
 type = "required"
-versionRange = "[1.20.6,)"
+versionRange = "[1.21.11,)"
 ordering = "NONE"
 side = "BOTH"

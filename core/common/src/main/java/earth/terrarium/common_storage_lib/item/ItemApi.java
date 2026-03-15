@@ -8,7 +8,7 @@ import earth.terrarium.common_storage_lib.lookup.ItemLookup;
 import earth.terrarium.common_storage_lib.storage.base.CommonStorage;
 import net.minecraft.core.Direction;
 import net.msrandom.multiplatform.annotations.Expect;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 @SuppressWarnings("NoMatchingActual")
 @Expect

@@ -6,7 +6,7 @@ import earth.terrarium.common_storage_lib.context.ItemContext;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 public interface ItemConsumer {
     Codec<ItemConsumer> CODEC = ItemConsumerRegistry.TYPE_CODEC.dispatch(ItemConsumer::getType, ConsumerType::codec);
@@ -21,7 +21,7 @@ public interface ItemConsumer {
         }
 
         @Override
-        public @NotNull ItemConsumer decode(RegistryFriendlyByteBuf regByteBuf) {
+        public @NonNull ItemConsumer decode(RegistryFriendlyByteBuf regByteBuf) {
             ConsumerType<?> fluidIngredientType = ItemConsumerRegistry.STREAM_CODEC.decode(regByteBuf);
             return fluidIngredientType.streamCodec().decode(regByteBuf);
         }

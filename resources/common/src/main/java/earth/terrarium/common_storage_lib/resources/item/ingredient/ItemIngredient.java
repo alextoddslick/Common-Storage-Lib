@@ -1,7 +1,7 @@
 package earth.terrarium.common_storage_lib.resources.item.ingredient;
 
 import com.mojang.serialization.MapCodec;
-import net.minecraft.core.component.DataComponentPredicate;
+import net.minecraft.core.component.DataComponentExactPredicate;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.msrandom.multiplatform.annotations.Expect;
@@ -19,7 +19,7 @@ public class ItemIngredient {
     public static Ingredient difference(Ingredient base, Ingredient subtracted);
 
     @Expect
-    public static Ingredient components(Ingredient base, DataComponentPredicate components);
+    public static Ingredient components(Ingredient base, DataComponentExactPredicate components);
 
     @Expect
     public static Ingredient components(ItemStack stack);

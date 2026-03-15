@@ -11,13 +11,13 @@ import earth.terrarium.common_storage_lib.storage.base.ValueStorage;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemLore;
 
 public record EnergyConsumer(long energy) implements ItemConsumer {
     public static final MapCodec<EnergyConsumer> CODEC = Codec.LONG.fieldOf("energy").xmap(EnergyConsumer::new, EnergyConsumer::energy);
-    public static final ConsumerType<EnergyConsumer> TYPE = new ConsumerType<>(ResourceLocation.fromNamespaceAndPath(CommonStorageLib.MOD_ID, "energy"), CODEC);
+    public static final ConsumerType<EnergyConsumer> TYPE = new ConsumerType<>(Identifier.fromNamespaceAndPath(CommonStorageLib.MOD_ID, "energy"), CODEC);
 
     @Override
     public boolean test(ItemStack stack, ItemContext context) {

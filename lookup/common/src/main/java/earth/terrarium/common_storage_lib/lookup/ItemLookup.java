@@ -1,11 +1,11 @@
 package earth.terrarium.common_storage_lib.lookup;
 
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.msrandom.multiplatform.annotations.Expect;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -13,9 +13,9 @@ import java.util.function.Predicate;
 public interface ItemLookup<T, C> {
 
     @Expect
-    static <T, C> ItemLookup<T, C> create(ResourceLocation name, Class<T> typeClass, Class<C> contextClass);
+    static <T, C> ItemLookup<T, C> create(Identifier name, Class<T> typeClass, Class<C> contextClass);
 
-    static <T> ItemLookup<T, Void> create(ResourceLocation name, Class<T> typeClass) {
+    static <T> ItemLookup<T, Void> create(Identifier name, Class<T> typeClass) {
         return create(name, typeClass, null);
     }
 

@@ -13,7 +13,7 @@ import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Iterator;
 import java.util.function.Function;
@@ -60,7 +60,7 @@ public class FabricWrappedContainer<U extends Resource, V extends TransferVarian
     }
 
     @Override
-    public @NotNull Iterator<StorageView<V>> iterator() {
+    public @NonNull Iterator<StorageView<V>> iterator() {
         return new Iterator<>() {
             int slot = 0;
 

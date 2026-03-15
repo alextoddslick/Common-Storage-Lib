@@ -14,13 +14,13 @@ description = "Abstraction for Transfer resources, including Item, Fluids and En
 [[dependencies.common_storage_lib_resources]]
 modId = "neoforge"
 type = "required"
-versionRange = "[20,)"
+versionRange = "[21.11,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.common_storage_lib_resources]]
 modId = "minecraft"
 type = "required"
-versionRange = "[1.20.6,)"
+versionRange = "[1.21.11,)"
 ordering = "NONE"
 side = "BOTH"

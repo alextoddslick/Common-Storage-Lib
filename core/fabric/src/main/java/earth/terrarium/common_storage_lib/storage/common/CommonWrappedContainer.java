@@ -8,7 +8,7 @@ import net.fabricmc.fabric.api.transfer.v1.storage.SlottedStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.function.Function;
 
@@ -34,7 +34,7 @@ public record CommonWrappedContainer<U extends Resource, V extends TransferVaria
     }
 
     @Override
-    public @NotNull StorageSlot<U> get(int index) {
+    public @NonNull StorageSlot<U> get(int index) {
         if (storage instanceof SlottedStorage<V> slotted) {
             return new CommonWrappedSlotSlot<>(slotted.getSlot(index), this::toVariant, this::toResource);
         }

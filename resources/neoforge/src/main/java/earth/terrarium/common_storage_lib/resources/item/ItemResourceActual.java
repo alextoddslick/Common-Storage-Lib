@@ -5,11 +5,11 @@ import net.msrandom.multiplatform.annotations.Actual;
 public class ItemResourceActual {
     @Actual
     private static ItemResource getCraftingRemainder(ItemResource resource) {
-        return ItemResource.of(resource.getCachedStack().getCraftingRemainingItem());
+        return ItemResource.of(resource.getItem().getCraftingRemainder());
     }
 
     @Actual
     private static boolean hasCraftingRemainder(ItemResource resource) {
-        return resource.getCachedStack().hasCraftingRemainingItem();
+        return !resource.getItem().getCraftingRemainder().isEmpty();
     }
 }

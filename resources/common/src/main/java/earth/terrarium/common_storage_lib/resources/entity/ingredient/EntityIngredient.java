@@ -5,12 +5,12 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import earth.terrarium.common_storage_lib.resources.entity.EntityResource;
 import earth.terrarium.common_storage_lib.resources.entity.ingredient.impl.*;
-import net.minecraft.core.component.DataComponentPredicate;
+import net.minecraft.core.component.DataComponentExactPredicate;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Arrays;
 import java.util.List;
@@ -30,7 +30,7 @@ public interface EntityIngredient extends Predicate<EntityResource> {
         }
 
         @Override
-        public @NotNull EntityIngredient decode(RegistryFriendlyByteBuf regByteBuf) {
+        public @NonNull EntityIngredient decode(RegistryFriendlyByteBuf regByteBuf) {
             EntityIngredientType<?> EntityIngredientType = EntityIngredientRegistry.STREAM_CODEC.decode(regByteBuf);
             return EntityIngredientType.streamCodec().decode(regByteBuf);
         }
@@ -56,7 +56,7 @@ public interface EntityIngredient extends Predicate<EntityResource> {
         return new DifferenceEntityIngredient(minuend, subtrahend);
     }
 
-    static EntityIngredient components(EntityIngredient base, DataComponentPredicate components) {
+    static EntityIngredient components(EntityIngredient base, DataComponentExactPredicate components) {
         return new ComponentEntityIngredient(base, components);
     }
 

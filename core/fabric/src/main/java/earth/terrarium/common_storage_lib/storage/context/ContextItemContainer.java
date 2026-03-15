@@ -9,7 +9,7 @@ import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import org.apache.commons.lang3.function.TriFunction;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ public record ContextItemContainer(List<SingleSlotStorage<ItemVariant>> storage,
     }
 
     @Override
-    public @NotNull StorageSlot<ItemResource> get(int index) {
+    public @NonNull StorageSlot<ItemResource> get(int index) {
         return new StorageSlotImpl(storage.get(index));
     }
 

@@ -35,7 +35,7 @@ public class DataManagerBuilderImpl<T> implements DataManagerBuilder<T> {
 
     @Override
     public DataManagerBuilder<T> serialize(Codec<T> codec) {
-        builder.serialize(codec);
+        builder.serialize(codec.fieldOf("value"));
         this.codec = codec;
         return this;
     }

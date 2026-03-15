@@ -2,7 +2,7 @@ package earth.terrarium.common_storage_lib.storage.fabric;
 
 import earth.terrarium.common_storage_lib.storage.base.UpdateManager;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class OptionalSnapshotParticipant<T> extends SnapshotParticipant<T> {
     public final UpdateManager<T> updateManager;

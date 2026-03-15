@@ -1,9 +1,8 @@
 package earth.terrarium.common_storage_lib.resources.item.ingredient;
 
 import com.mojang.serialization.MapCodec;
-import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.component.DataComponentPredicate;
+import net.minecraft.core.component.DataComponentExactPredicate;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -30,13 +29,8 @@ public class ItemIngredientActual {
     }
 
     @Actual
-    public static Ingredient components(Ingredient base, DataComponentPredicate components) {
-        ItemStack[] items = base.getItems();
-        Holder<Item>[] holders = new Holder[items.length];
-        for (int i = 0; i < items.length; i++) {
-            holders[i] = items[i].getItem().builtInRegistryHolder();
-        }
-        HolderSet<Item> set = HolderSet.direct(holders);
+    public static Ingredient components(Ingredient base, DataComponentExactPredicate components) {
+        HolderSet<Item> set = HolderSet.direct(base.items().toList());
         return new DataComponentIngredient(set, components, true).toVanilla();
     }
 
@@ -47,6 +41,6 @@ public class ItemIngredientActual {
 
     @Actual
     private static MapCodec<Ingredient> getNonEmptyMapCodec() {
-        return Ingredient.MAP_CODEC_NONEMPTY;
+        return Ingredient.CODEC.fieldOf("ingredient");
     }
 }

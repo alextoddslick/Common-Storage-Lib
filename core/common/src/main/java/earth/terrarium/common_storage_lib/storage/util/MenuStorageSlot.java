@@ -9,7 +9,7 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 public class MenuStorageSlot extends Slot {
     public static final Container EMPTY = new SimpleContainer(0);
@@ -34,7 +34,7 @@ public class MenuStorageSlot extends Slot {
     }
 
     @Override
-    public @NotNull ItemStack getItem() {
+    public @NonNull ItemStack getItem() {
         return modifiable.toItemStack();
     }
 
@@ -62,7 +62,7 @@ public class MenuStorageSlot extends Slot {
     }
 
     @Override
-    public @NotNull ItemStack remove(int amount) {
+    public @NonNull ItemStack remove(int amount) {
         ItemResource resource = storageSlot.getResource();
         long extract = this.storageSlot.extract(resource, amount, false);
         return extract > 0 ? resource.toStack((int) extract) : ItemStack.EMPTY;

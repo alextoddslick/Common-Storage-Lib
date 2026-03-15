@@ -7,14 +7,14 @@ import earth.terrarium.common_storage_lib.context.ItemContext;
 import earth.terrarium.common_storage_lib.item.input.ConsumerType;
 import earth.terrarium.common_storage_lib.item.input.ItemConsumer;
 import earth.terrarium.common_storage_lib.resources.item.ItemResource;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 public record SizedConsumer(long amount) implements ItemConsumer {
     public static final SizedConsumer DEFAULT = new SizedConsumer(1);
     public static final Codec<SizedConsumer> CODEC = Codec.LONG.xmap(SizedConsumer::new, SizedConsumer::amount);
     public static final MapCodec<SizedConsumer> MAP_CODEC = CODEC.optionalFieldOf("count", DEFAULT);
-    public static final ConsumerType<SizedConsumer> TYPE = new ConsumerType<>(ResourceLocation.fromNamespaceAndPath(CommonStorageLib.MOD_ID, "sized"), MAP_CODEC);
+    public static final ConsumerType<SizedConsumer> TYPE = new ConsumerType<>(Identifier.fromNamespaceAndPath(CommonStorageLib.MOD_ID, "sized"), MAP_CODEC);
 
     @Override
     public boolean test(ItemStack stack, ItemContext context) {

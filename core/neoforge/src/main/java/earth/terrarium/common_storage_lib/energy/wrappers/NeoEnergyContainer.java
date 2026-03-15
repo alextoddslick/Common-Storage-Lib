@@ -2,40 +2,35 @@ package earth.terrarium.common_storage_lib.energy.wrappers;
 
 import earth.terrarium.common_storage_lib.storage.base.ValueStorage;
 import earth.terrarium.common_storage_lib.storage.base.UpdateManager;
-import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
-public record NeoEnergyContainer(ValueStorage container) implements IEnergyStorage {
+public record NeoEnergyContainer(ValueStorage container) implements EnergyHandler {
     @Override
-    public int receiveEnergy(int i, boolean bl) {
-        long inserted = container.insert(i, bl);
-        if (!bl) UpdateManager.batch(container);
+    public long getAmountAsLong() {
+        return container.getStoredAmount();
+    }
+
+    @Override
+    public long getCapacityAsLong() {
+        return container.getCapacity();
+    }
+
+    @Override
+    public int insert(int amount, TransactionContext transaction) {
+        // CSL's ValueStorage doesn't support NeoForge transactions natively.
+        // We execute the operation directly; rollback is not supported.
+        long inserted = container.insert(amount, false);
+        UpdateManager.batch(container);
         return (int) inserted;
     }
 
     @Override
-    public int extractEnergy(int i, boolean bl) {
-        long extracted = container.extract(i, bl);
-        if (!bl) UpdateManager.batch(container);
+    public int extract(int amount, TransactionContext transaction) {
+        // CSL's ValueStorage doesn't support NeoForge transactions natively.
+        // We execute the operation directly; rollback is not supported.
+        long extracted = container.extract(amount, false);
+        UpdateManager.batch(container);
         return (int) extracted;
-    }
-
-    @Override
-    public int getEnergyStored() {
-        return (int) container.getStoredAmount();
-    }
-
-    @Override
-    public int getMaxEnergyStored() {
-        return (int) container.getCapacity();
-    }
-
-    @Override
-    public boolean canExtract() {
-        return container.allowsExtraction();
-    }
-
-    @Override
-    public boolean canReceive() {
-        return container.allowsInsertion();
     }
 }

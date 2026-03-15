@@ -9,7 +9,7 @@ import earth.terrarium.common_storage_lib.storage.base.UpdateManager;
 import earth.terrarium.common_storage_lib.storage.util.TransferUtil;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponentType;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.function.Predicate;
 
@@ -51,7 +51,7 @@ public class SimpleItemStorage implements CommonStorage<ItemResource>, UpdateMan
     }
 
     @Override
-    public @NotNull SimpleItemSlot get(int index) {
+    public @NonNull SimpleItemSlot get(int index) {
         return slots.get(index);
     }
 

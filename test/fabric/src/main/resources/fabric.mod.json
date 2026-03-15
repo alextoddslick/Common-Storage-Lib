@@ -17,9 +17,10 @@
     ]
   },
   "license": "MIT",
+  "accessWidener": "common_storage_lib_test.accesswidener",
   "environment": "*",
   "depends": {
     "fabric": "*",
-    "minecraft": ">=1.20.5"
+    "minecraft": ">=1.21.11"
   }
 }

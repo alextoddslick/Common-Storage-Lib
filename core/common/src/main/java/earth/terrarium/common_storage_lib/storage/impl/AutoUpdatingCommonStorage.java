@@ -4,7 +4,7 @@ import earth.terrarium.common_storage_lib.resources.Resource;
 import earth.terrarium.common_storage_lib.storage.base.CommonStorage;
 import earth.terrarium.common_storage_lib.storage.base.StorageSlot;
 import earth.terrarium.common_storage_lib.storage.base.UpdateManager;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 public record AutoUpdatingCommonStorage<T extends Resource>(CommonStorage<T> commonStorage) implements CommonStorage<T> {
     @Override
@@ -13,7 +13,7 @@ public record AutoUpdatingCommonStorage<T extends Resource>(CommonStorage<T> com
     }
 
     @Override
-    public @NotNull StorageSlot<T> get(int index) {
+    public @NonNull StorageSlot<T> get(int index) {
         return commonStorage.get(index);
     }
 

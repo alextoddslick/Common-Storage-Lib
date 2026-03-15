@@ -4,13 +4,13 @@ import earth.terrarium.common_storage_lib.lookup.BlockLookup;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -22,7 +22,7 @@ public class FabricBlockLookup<T, C> implements BlockLookup<T, C> {
         this.lookup = lookup;
     }
 
-    public FabricBlockLookup(ResourceLocation id, Class<T> type, Class<C> contextType) {
+    public FabricBlockLookup(Identifier id, Class<T> type, Class<C> contextType) {
         this(BlockApiLookup.get(id, type, contextType));
     }
 

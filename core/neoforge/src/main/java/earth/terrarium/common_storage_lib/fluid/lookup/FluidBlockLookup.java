@@ -16,7 +16,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import org.jetbrains.annotations.Nullable;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,13 +33,17 @@ public final class FluidBlockLookup implements BlockLookup<CommonStorage<FluidRe
 
     @Override
     public @Nullable CommonStorage<FluidResource> find(Level level, BlockPos pos, @Nullable BlockState state, @Nullable BlockEntity entity, @Nullable Direction direction) {
-        IFluidHandler handler = level.getCapability(Capabilities.FluidHandler.BLOCK, pos, state, entity, direction);
+        ResourceHandler<net.neoforged.neoforge.transfer.fluid.FluidResource> handler = level.getCapability(Capabilities.Fluid.BLOCK, pos, state, entity, direction);
 
         if (handler instanceof NeoFluidContainer(CommonStorage<FluidResource> container)) {
             return new AutoUpdatingCommonStorage<>(container);
         }
 
-        return handler == null ? null : new CommonFluidContainer(handler);
+        if (handler != null) {
+            IFluidHandler legacyHandler = IFluidHandler.of(handler);
+            return new CommonFluidContainer(legacyHandler);
+        }
+        return null;
     }
 
     @Override
@@ -55,7 +60,7 @@ public final class FluidBlockLookup implements BlockLookup<CommonStorage<FluidRe
         @Override
         public void registerBlocks(BlockGetter<CommonStorage<FluidResource>, Direction> getter, net.minecraft.world.level.block.Block... containers) {
             for (net.minecraft.world.level.block.Block block : containers) {
-                event.registerBlock(Capabilities.FluidHandler.BLOCK, (level, pos, state, entity, direction) -> {
+                event.registerBlock(Capabilities.Fluid.BLOCK, (level, pos, state, entity, direction) -> {
                     CommonStorage<FluidResource> container = getter.getContainer(level, pos, state, entity, direction);
                     return container == null ? null : new NeoFluidContainer(container);
                 }, block);
@@ -65,7 +70,7 @@ public final class FluidBlockLookup implements BlockLookup<CommonStorage<FluidRe
         @Override
         public void registerBlockEntities(BlockEntityGetter<CommonStorage<FluidResource>, Direction> getter, BlockEntityType<?>... containers) {
             for (BlockEntityType<?> blockEntityType : containers) {
-                event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, blockEntityType, (entity, direction) -> {
+                event.registerBlockEntity(Capabilities.Fluid.BLOCK, blockEntityType, (entity, direction) -> {
                     CommonStorage<FluidResource> container = getter.getContainer(entity, direction);
                     return container == null ? null : new NeoFluidContainer(container);
                 });

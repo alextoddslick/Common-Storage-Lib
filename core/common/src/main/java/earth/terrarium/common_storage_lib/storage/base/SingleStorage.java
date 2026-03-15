@@ -1,7 +1,7 @@
 package earth.terrarium.common_storage_lib.storage.base;
 
 import earth.terrarium.common_storage_lib.resources.Resource;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 public interface SingleStorage<T extends Resource> extends CommonStorage<T>, StorageSlot<T> {
     default int size() {
@@ -38,7 +38,7 @@ public interface SingleStorage<T extends Resource> extends CommonStorage<T>, Sto
         return insert(resource, amount, simulate);
     }
 
-    default @NotNull StorageSlot<T> get(int index) {
+    default @NonNull StorageSlot<T> get(int index) {
         return this;
     }
 }

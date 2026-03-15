@@ -5,7 +5,7 @@ import earth.terrarium.common_storage_lib.storage.base.CommonStorage;
 import earth.terrarium.common_storage_lib.storage.base.StorageSlot;
 import earth.terrarium.common_storage_lib.storage.util.TransferUtil;
 import net.minecraft.world.Container;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +38,7 @@ public abstract class AbstractVanillaContainer implements CommonStorage<ItemReso
     }
 
     @Override
-    public @NotNull StorageSlot<ItemResource> get(int index) {
+    public @NonNull StorageSlot<ItemResource> get(int index) {
         return slots.get(index);
     }
 }

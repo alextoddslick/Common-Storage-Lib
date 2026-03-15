@@ -10,7 +10,7 @@ import earth.terrarium.common_storage_lib.lookup.EntityLookup;
 import earth.terrarium.common_storage_lib.lookup.ItemLookup;
 import earth.terrarium.common_storage_lib.storage.base.ValueStorage;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.msrandom.multiplatform.annotations.Actual;
 
 @Actual
@@ -20,5 +20,5 @@ public class EnergyApiActual {
     @Actual
     public static final ItemLookup<ValueStorage, ItemContext> ITEM = new EnergyItemLookup();
     @Actual
-    public static final EntityLookup<ValueStorage, Direction> ENTITY = EntityLookup.create(ResourceLocation.fromNamespaceAndPath(CommonStorageLib.MOD_ID, "entity_energy"), ValueStorage.class, Direction.class);
+    public static final EntityLookup<ValueStorage, Direction> ENTITY = EntityLookup.create(Identifier.fromNamespaceAndPath(CommonStorageLib.MOD_ID, "entity_energy"), ValueStorage.class, Direction.class);
 }

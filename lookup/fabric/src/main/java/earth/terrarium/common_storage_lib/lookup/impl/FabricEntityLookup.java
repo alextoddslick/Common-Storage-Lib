@@ -3,10 +3,10 @@ package earth.terrarium.common_storage_lib.lookup.impl;
 import earth.terrarium.common_storage_lib.lookup.EntityLookup;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.lookup.v1.entity.EntityApiLookup;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -18,7 +18,7 @@ public class FabricEntityLookup<T, C> implements EntityLookup<T, C> {
         this.lookup = lookup;
     }
 
-    public FabricEntityLookup(ResourceLocation id, Class<T> type, Class<C> contextType) {
+    public FabricEntityLookup(Identifier id, Class<T> type, Class<C> contextType) {
         this(EntityApiLookup.get(id, type, contextType));
     }
 

@@ -15,7 +15,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemLore;
 
@@ -24,7 +24,7 @@ public record FluidConsumer(SizedFluidIngredient ingredient, Component name) imp
             SizedFluidIngredient.FLAT_MB_CODEC.forGetter(FluidConsumer::ingredient),
             ComponentSerialization.CODEC.fieldOf("name").forGetter(FluidConsumer::name)
     ).apply(instance, FluidConsumer::new));
-    public static final ConsumerType<FluidConsumer> TYPE = new ConsumerType<>(ResourceLocation.fromNamespaceAndPath(CommonStorageLib.MOD_ID, "fluid"), CODEC);
+    public static final ConsumerType<FluidConsumer> TYPE = new ConsumerType<>(Identifier.fromNamespaceAndPath(CommonStorageLib.MOD_ID, "fluid"), CODEC);
 
     @Override
     public boolean test(ItemStack stack, ItemContext context) {

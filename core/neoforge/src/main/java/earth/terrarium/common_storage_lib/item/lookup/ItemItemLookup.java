@@ -9,13 +9,15 @@ import earth.terrarium.common_storage_lib.item.wrappers.NeoItemHandler;
 import earth.terrarium.common_storage_lib.lookup.RegistryEventListener;
 import earth.terrarium.common_storage_lib.lookup.ItemLookup;
 import earth.terrarium.common_storage_lib.storage.base.CommonStorage;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.items.IItemHandler;
-import org.jetbrains.annotations.Nullable;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +25,7 @@ import java.util.function.Consumer;
 
 public final class ItemItemLookup implements ItemLookup<CommonStorage<ItemResource>, ItemContext>, RegistryEventListener {
     public static final ItemItemLookup INSTANCE = new ItemItemLookup();
-    private static final ItemCapability<CommonStorage<ItemResource>, ItemContext> CAPABILITY = ItemCapability.create(ResourceLocation.fromNamespaceAndPath(CommonStorageLib.MOD_ID, "item_item"), CommonStorage.asClass(), ItemContext.class);
+    private static final ItemCapability<CommonStorage<ItemResource>, ItemContext> CAPABILITY = ItemCapability.create(Identifier.fromNamespaceAndPath(CommonStorageLib.MOD_ID, "item_item"), CommonStorage.asClass(), ItemContext.class);
 
     private final List<Consumer<ItemRegistrar<CommonStorage<ItemResource>, ItemContext>>> registrars = new ArrayList<>();
 
@@ -37,8 +39,15 @@ public final class ItemItemLookup implements ItemLookup<CommonStorage<ItemResour
         if (capability != null) {
             return capability;
         }
-        IItemHandler handler = stack.getCapability(Capabilities.ItemHandler.ITEM);
-        return handler != null ? new CommonItemContainerItem(handler, stack, context) : null;
+        if (!stack.isEmpty()) {
+            ItemAccess access = ItemAccess.forStack(stack);
+            ResourceHandler<net.neoforged.neoforge.transfer.item.ItemResource> handler = stack.getCapability(Capabilities.Item.ITEM, access);
+            if (handler != null) {
+                IItemHandler legacyHandler = IItemHandler.of(handler);
+                return new CommonItemContainerItem(legacyHandler, stack, context);
+            }
+        }
+        return null;
     }
 
     @Override
@@ -51,7 +60,7 @@ public final class ItemItemLookup implements ItemLookup<CommonStorage<ItemResour
         registrars.forEach(registrar -> registrar.accept((getter, containers) -> {
             event.registerItem(CAPABILITY, getter::getContainer, containers);
 
-            event.registerItem(Capabilities.ItemHandler.ITEM, (stack, ignored) -> {
+            event.registerItem(Capabilities.Item.ITEM, (stack, ignored) -> {
                 ModifyOnlyContext context = new ModifyOnlyContext(stack);
                 CommonStorage<ItemResource> container = getter.getContainer(stack, context);
                 return container == null ? null : new NeoItemHandler(container);

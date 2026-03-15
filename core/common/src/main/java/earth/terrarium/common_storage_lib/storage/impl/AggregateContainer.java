@@ -4,7 +4,7 @@ import earth.terrarium.common_storage_lib.resources.Resource;
 import earth.terrarium.common_storage_lib.storage.base.CommonStorage;
 import earth.terrarium.common_storage_lib.storage.base.StorageSlot;
 import earth.terrarium.common_storage_lib.storage.base.UpdateManager;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 public class AggregateContainer<T extends Resource> implements CommonStorage<T>, UpdateManager<Object[]> {
     private final CommonStorage<T>[] containers;
@@ -29,7 +29,7 @@ public class AggregateContainer<T extends Resource> implements CommonStorage<T>,
     }
 
     @Override
-    public @NotNull StorageSlot<T> get(int index) {
+    public @NonNull StorageSlot<T> get(int index) {
         for (int i = 0; i < containers.length; i++) {
             if (index < indexOffsets[i]) {
                 return containers[i].get(index - indexOffsets[i]);

@@ -9,13 +9,13 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public record BlockEntitySyncPacket(BlockPos pos, BlockEntityType<?> blockEntityType, AttachmentData<?> syncData) implements CustomPacketPayload {
-    public static final Type<BlockEntitySyncPacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(FabricDataLib.MOD_ID, "block_entity"));
+    public static final Type<BlockEntitySyncPacket> TYPE = new Type<>(Identifier.fromNamespaceAndPath(FabricDataLib.MOD_ID, "block_entity"));
     public static final StreamCodec<RegistryFriendlyByteBuf, BlockEntitySyncPacket> CODEC = StreamCodec.composite(
             BlockPos.STREAM_CODEC,
             BlockEntitySyncPacket::pos,

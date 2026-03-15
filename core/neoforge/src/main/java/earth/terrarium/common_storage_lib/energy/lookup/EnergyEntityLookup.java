@@ -12,7 +12,8 @@ import net.minecraft.world.entity.EntityType;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.energy.IEnergyStorage;
-import org.jetbrains.annotations.Nullable;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,11 +29,15 @@ public final class EnergyEntityLookup implements EntityLookup<ValueStorage, Dire
 
     @Override
     public @Nullable ValueStorage find(Entity entity, Direction context) {
-        IEnergyStorage capability = entity.getCapability(Capabilities.EnergyStorage.ENTITY, context);
-        if (capability instanceof NeoEnergyContainer(ValueStorage container)) {
+        EnergyHandler handler = entity.getCapability(Capabilities.Energy.ENTITY, context);
+        if (handler instanceof NeoEnergyContainer(ValueStorage container)) {
             return new AutoUpdatingValueStorage(container);
         }
-        return capability == null ? null : new CommonEnergyStorage(capability);
+        if (handler != null) {
+            IEnergyStorage storage = IEnergyStorage.of(handler);
+            return new CommonEnergyStorage(storage);
+        }
+        return null;
     }
 
     @Override
@@ -43,7 +48,7 @@ public final class EnergyEntityLookup implements EntityLookup<ValueStorage, Dire
     public void register(RegisterCapabilitiesEvent event) {
         registrars.forEach(registrar -> registrar.accept((getter, containers) -> {
             for (EntityType<?> container : containers) {
-                event.registerEntity(Capabilities.EnergyStorage.ENTITY, container, (entity, direction) -> {
+                event.registerEntity(Capabilities.Energy.ENTITY, container, (entity, direction) -> {
                     ValueStorage storage = getter.getContainer(entity, direction);
                     return storage == null ? null : new NeoEnergyContainer(storage);
                 });

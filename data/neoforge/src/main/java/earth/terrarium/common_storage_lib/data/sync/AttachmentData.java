@@ -2,9 +2,9 @@ package earth.terrarium.common_storage_lib.data.sync;
 
 import earth.terrarium.common_storage_lib.data.NeoDataLib;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.attachment.AttachmentHolder;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,11 +20,11 @@ public record AttachmentData<T>(DataSyncSerializer<T> serializer, @Nullable T da
     }
 
     public void encode(RegistryFriendlyByteBuf buf) {
-        ResourceLocation key = NeoDataLib.SYNC_SERIALIZERS.getKey(serializer);
+        Identifier key = NeoDataLib.SYNC_SERIALIZERS.getKey(serializer);
         if (key == null) {
             throw new IllegalStateException("Unknown sync serializer: " + serializer);
         }
-        buf.writeResourceLocation(key);
+        buf.writeIdentifier(key);
         if (data == null) {
             buf.writeBoolean(false);
         } else {

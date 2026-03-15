@@ -10,9 +10,9 @@ import earth.terrarium.common_storage_lib.storage.base.CommonStorage;
 import earth.terrarium.common_storage_lib.wrapped.WrappedBlockLookup;
 import earth.terrarium.common_storage_lib.wrapped.WrappedItemLookup;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.msrandom.multiplatform.annotations.Actual;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 @Actual
 public class FluidApiActual {
@@ -21,5 +21,5 @@ public class FluidApiActual {
     @Actual
     public static final ItemLookup<CommonStorage<FluidResource>, ItemContext> ITEM = new WrappedItemLookup.OfFluid();
     @Actual
-    public static final EntityLookup<CommonStorage<FluidResource>, Direction> ENTITY = EntityLookup.createAutomation(ResourceLocation.fromNamespaceAndPath(CommonStorageLib.MOD_ID, "entity_fluid"), CommonStorage.asClass());
+    public static final EntityLookup<CommonStorage<FluidResource>, Direction> ENTITY = EntityLookup.createAutomation(Identifier.fromNamespaceAndPath(CommonStorageLib.MOD_ID, "entity_fluid"), CommonStorage.asClass());
 }

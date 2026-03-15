@@ -2,12 +2,12 @@ package earth.terrarium.common_storage_lib.storage.base;
 
 import earth.terrarium.common_storage_lib.resources.Resource;
 import earth.terrarium.common_storage_lib.resources.ResourceStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 public interface CommonStorage<T extends Resource> extends StorageIO<T> {
     int size();
 
-    @NotNull
+    @NonNull
     StorageSlot<T> get(int index);
 
     default boolean allowsInsertion() {

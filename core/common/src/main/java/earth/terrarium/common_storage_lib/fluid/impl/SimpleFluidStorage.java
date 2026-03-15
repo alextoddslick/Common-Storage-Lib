@@ -12,7 +12,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.function.Predicate;
 
@@ -60,7 +60,7 @@ public class SimpleFluidStorage implements CommonStorage<FluidResource>, UpdateM
     }
 
     @Override
-    public @NotNull SimpleFluidSlot get(int index) {
+    public @NonNull SimpleFluidSlot get(int index) {
         return slots.get(index);
     }
 

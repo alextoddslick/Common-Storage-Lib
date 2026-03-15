@@ -5,7 +5,7 @@ import earth.terrarium.common_storage_lib.resources.fluid.FluidResource;
 import earth.terrarium.common_storage_lib.storage.base.CommonStorage;
 import earth.terrarium.common_storage_lib.storage.base.StorageSlot;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 public interface AbstractCommonFluidContainer extends CommonStorage<FluidResource> {
     IFluidHandler handler();
@@ -26,7 +26,7 @@ public interface AbstractCommonFluidContainer extends CommonStorage<FluidResourc
     }
 
     @Override
-    default @NotNull StorageSlot<FluidResource> get(int index) {
+    default @NonNull StorageSlot<FluidResource> get(int index) {
         return new DelegatingFluidHandlerSlot(this, index);
     }
 }
