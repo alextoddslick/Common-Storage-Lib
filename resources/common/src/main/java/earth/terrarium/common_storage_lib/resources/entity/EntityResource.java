@@ -18,6 +18,8 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.EntityType;
 import org.jspecify.annotations.Nullable;
 
+import java.util.Objects;
+
 public final class EntityResource extends ResourceComponent {
     public static EntityResource BLANK = EntityResource.of((EntityType<?>) null);
 
@@ -91,5 +93,19 @@ public final class EntityResource extends ResourceComponent {
 
     public Holder<EntityType<?>> toHolder() {
         return type.builtInRegistryHolder();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (obj == null || obj.getClass() != this.getClass()) return false;
+        var that = (EntityResource) obj;
+        return Objects.equals(this.type, that.type) &&
+                Objects.equals(this.components, that.components);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type, components);
     }
 }

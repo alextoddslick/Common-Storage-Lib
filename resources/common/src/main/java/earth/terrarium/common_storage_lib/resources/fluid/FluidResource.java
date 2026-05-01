@@ -19,6 +19,8 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 
+import java.util.Objects;
+
 public final class FluidResource extends ResourceComponent {
     public static final FluidResource BLANK = FluidResource.of(Fluids.EMPTY, DataComponentPatch.EMPTY);
 
@@ -100,5 +102,19 @@ public final class FluidResource extends ResourceComponent {
 
     public boolean is(TagKey<Fluid> tag) {
         return type.is(tag);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (obj == null || obj.getClass() != this.getClass()) return false;
+        var that = (FluidResource) obj;
+        return Objects.equals(this.type, that.type) &&
+                Objects.equals(this.components, that.components);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type, components);
     }
 }
