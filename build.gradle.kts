@@ -1,158 +1,69 @@
-import dev.architectury.plugin.ArchitectPluginExtension
 import groovy.json.StringEscapeUtils
-import net.fabricmc.loom.api.LoomGradleExtensionAPI
-import net.fabricmc.loom.task.RemapJarTask
 
 plugins {
     java
     id("maven-publish")
     id("com.teamresourceful.resourcefulgradle") version "0.0.+"
-    id("dev.architectury.loom") version "1.13-SNAPSHOT" apply false
-    id("architectury-plugin") version "3.4-SNAPSHOT"
-}
-
-architectury {
-    val minecraftVersion: String by project
-    minecraft = minecraftVersion
+    id("net.fabricmc.fabric-loom") version "1.15.5" apply false
 }
 
 subprojects {
+    apply(plugin = "java")
     apply(plugin = "maven-publish")
-    apply(plugin = "dev.architectury.loom")
-    apply(plugin = "architectury-plugin")
+    apply(plugin = "net.fabricmc.fabric-loom")
 
     val minecraftVersion: String by project
-    val modId = rootProject.name
-
-    val moduleType = project.layout.projectDirectory.asFile.parentFile.name.takeUnless { it == "core" }
-    val modLoader = project.layout.projectDirectory.asFile.name
-    val isCommon = modLoader == "common"
-    val commonPath = when {
-        isCommon -> project.name
-        moduleType == null -> ":${rootProject.name}-common"
-        else -> ":${rootProject.name}-$moduleType-common"
-    }
-
-    val isFabric = modLoader == "fabric"
     val fabricLoaderVersion: String by project
     val fabricApiVersion: String by project
     val modMenuVersion: String by project
+    val modId = rootProject.name
 
-    val isNeoForge = modLoader == "neoforge"
-    val neoforgeVersion: String by project
+    // Module name (e.g. "data") derived from parent directory. "core" has no parent module name.
+    val moduleType: String? = project.layout.projectDirectory.asFile.parentFile.name.takeUnless { it == rootProject.projectDir.name }
 
     base {
         archivesName.set("${project.name}-$minecraftVersion")
     }
 
-    configure<LoomGradleExtensionAPI> {
-        silentMojangMappingsLicense()
-        runs {
-            named("client") {
-                name("Test Client")
-                source(sourceSets.test.get())
-            }
-            named("server") {
-                name("Test Server")
-                source(sourceSets.test.get())
-            }
-        }
-    }
-
     repositories {
-        maven(url = "https://maven.architectury.dev/")
-        maven(url = "https://maven.minecraftforge.net/")
+        maven(url = "https://maven.fabricmc.net/")
+        maven(url = "https://maven.terraformersmc.com/releases/")
         maven(url = "https://maven.resourcefulbees.com/repository/maven-public/")
-        maven(url = "https://maven.neoforged.net/releases/")
         maven(url = "https://kneelawk.com/maven")
-        maven(url = "https://maven.msrandom.net/repository/root/")
-        maven(url = "https://prmaven.neoforged.net/NeoForge/pr794") {
-            content {
-                includeModule("net.neoforged", "neoforge")
-                includeModule("net.neoforged", "testframework")
-            }
-        }
         exclusiveContent {
             forRepository {
-                maven (url = "https://cursemaven.com")
+                maven(url = "https://cursemaven.com")
             }
             filter {
                 includeGroup("curse.maven")
             }
         }
+        mavenCentral()
         mavenLocal()
     }
 
     dependencies {
+        "minecraft"("com.mojang:minecraft:$minecraftVersion")
+        // No mappings line - 26.1 is unobfuscated.
 
-        "minecraft"("::$minecraftVersion")
-
-        @Suppress("UnstableApiUsage")
-        "mappings"(project.the<LoomGradleExtensionAPI>().layered {
-            val parchmentVersion: String by project
-
-            officialMojangMappings()
-
-            parchment(create(group = "org.parchmentmc.data", name = "parchment-1.21.8", version = parchmentVersion))
-        })
-
-        if (isCommon) {
-            "modCompileOnly"(group = "tech.thatgravyboat", name = "commonats", version = "2.0")
-        } else if (System.getProperty("idea.sync.active", false.toString()).toBoolean()) {
-            compileOnly(project(commonPath, configuration = "namedElements"))
-        }
-
-        if (isFabric) {
-            "modImplementation"(group = "net.fabricmc", name = "fabric-loader", version = fabricLoaderVersion)
-            "modApi"(group = "net.fabricmc.fabric-api", name = "fabric-api", version = fabricApiVersion)
-
-            "modApi"(group = "com.terraformersmc", name = "modmenu", version = modMenuVersion)
-        }
-
-        if (isNeoForge) {
-            "neoForge"(group = "net.neoforged", name = "neoforge", version = neoforgeVersion)
-        }
-
-        annotationProcessor(group = "net.msrandom", name = "multiplatform-processor", version = "1.0.7")
-        compileOnly(group = "net.msrandom", name = "multiplatform-annotations", version = "1.0.0")
+        "implementation"("net.fabricmc:fabric-loader:$fabricLoaderVersion")
+        "api"("net.fabricmc.fabric-api:fabric-api:$fabricApiVersion")
+        "api"("com.terraformersmc:modmenu:$modMenuVersion")
     }
 
     java {
         withSourcesJar()
+        sourceCompatibility = JavaVersion.VERSION_25
+        targetCompatibility = JavaVersion.VERSION_25
     }
 
-    tasks.jar {
-        archiveClassifier.set("dev")
-    }
-
-    tasks.named<RemapJarTask>("remapJar") {
-        archiveClassifier.set(null as String?)
+    tasks.withType<JavaCompile>().configureEach {
+        options.release.set(25)
     }
 
     tasks.processResources {
-        //duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-        filesMatching(listOf("META-INF/neoforge.mods.toml", "fabric.mod.json")) {
+        filesMatching("fabric.mod.json") {
             expand("version" to project.version)
-        }
-    }
-
-    if (!isCommon) {
-        configure<ArchitectPluginExtension> {
-            platformSetupLoomIde()
-        }
-
-        sourceSets {
-            val commonSourceSets = project(commonPath).sourceSets
-            val commonMain = commonSourceSets.getByName("main")
-
-            getByName("main") {
-                java.srcDirs(commonMain.java.srcDirs)
-                resources.srcDirs(commonMain.resources.srcDirs)
-            }
-        }
-    } else {
-        tasks.compileJava {
-            options.compilerArgs.add("-AgenerateExpectStubs")
         }
     }
 
@@ -199,15 +110,13 @@ resourcefulGradle {
             val version: String by project
             val changelog: String = file("changelog.md").readText(Charsets.UTF_8)
             val fabricLink: String? = System.getenv("FABRIC_RELEASE_URL")
-            val forgeLink: String? = System.getenv("FORGE_RELEASE_URL")
 
             source.set(file("templates/embed.json.template"))
-            injectedValues.set(mapOf(
+            injectedValues.set(mapOf<String, Any>(
                 "minecraft" to minecraftVersion,
                 "version" to version,
                 "changelog" to StringEscapeUtils.escapeJava(changelog),
-                "fabric_link" to fabricLink,
-                "neoforge_link" to forgeLink,
+                "fabric_link" to (fabricLink ?: ""),
             ))
         }
     }

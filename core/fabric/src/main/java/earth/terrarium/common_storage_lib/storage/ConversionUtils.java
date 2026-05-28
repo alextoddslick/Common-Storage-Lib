@@ -9,7 +9,7 @@ import net.fabricmc.fabric.impl.transfer.transaction.TransactionManagerImpl;
 
 public class ConversionUtils {
     public static ItemResource toResource(ItemVariant variant) {
-        return ItemResource.of(variant.getItem(), variant.getComponents());
+        return ItemResource.of(variant.getItem(), variant.getComponentsPatch());
     }
 
     public static ItemVariant toVariant(ItemResource resource) {
@@ -17,7 +17,7 @@ public class ConversionUtils {
     }
 
     public static FluidResource toResource(FluidVariant variant) {
-        return FluidResource.of(variant.getFluid(), variant.getComponents());
+        return FluidResource.of(variant.getFluid(), variant.getComponentsPatch());
     }
 
     public static FluidVariant toVariant(FluidResource resource) {

@@ -21,7 +21,7 @@ import org.jspecify.annotations.NonNull;
 public class FabricDataLib implements ModInitializer {
     public static final String MOD_ID = "common_storage_lib_data";
     public static final ResourceKey<Registry<DataSyncSerializer<?>>> SYNC_SERIALIZERS_KEY = ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath(MOD_ID, "sync_serializers"));
-    public static final Registry<DataSyncSerializer<?>> SYNC_SERIALIZERS = FabricRegistryBuilder.createSimple(SYNC_SERIALIZERS_KEY).buildAndRegister();
+    public static final Registry<DataSyncSerializer<?>> SYNC_SERIALIZERS = FabricRegistryBuilder.create(SYNC_SERIALIZERS_KEY).buildAndRegister();
     public static StreamCodec<RegistryFriendlyByteBuf, AttachmentData<?>> SYNC_SERIALIZER_STREAM_CODEC = new StreamCodec<>() {
         @Override
         public void encode(RegistryFriendlyByteBuf object, AttachmentData<?> object2) {
@@ -40,10 +40,10 @@ public class FabricDataLib implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        PayloadTypeRegistry.playS2C().register(BlockEntitySyncPacket.TYPE, BlockEntitySyncPacket.CODEC);
-        PayloadTypeRegistry.playS2C().register(EntitySyncPacket.TYPE, EntitySyncPacket.CODEC);
-        PayloadTypeRegistry.playS2C().register(BlockEntitySyncAllPacket.TYPE, BlockEntitySyncAllPacket.CODEC);
-        PayloadTypeRegistry.playS2C().register(EntitySyncAllPacket.TYPE, EntitySyncAllPacket.CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(BlockEntitySyncPacket.TYPE, BlockEntitySyncPacket.CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(EntitySyncPacket.TYPE, EntitySyncPacket.CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(BlockEntitySyncAllPacket.TYPE, BlockEntitySyncAllPacket.CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(EntitySyncAllPacket.TYPE, EntitySyncAllPacket.CODEC);
 
         EntityTrackingEvents.START_TRACKING.register((entity, player) -> {
             EntitySyncAllPacket entitySyncAllPacket = EntitySyncAllPacket.of(entity);
