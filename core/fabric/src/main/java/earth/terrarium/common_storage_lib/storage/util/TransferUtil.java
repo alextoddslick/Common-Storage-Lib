@@ -6,8 +6,8 @@ import earth.terrarium.common_storage_lib.resources.fluid.FluidResource;
 import earth.terrarium.common_storage_lib.resources.fluid.ingredient.SizedFluidIngredient;
 import earth.terrarium.common_storage_lib.resources.item.ItemResource;
 import earth.terrarium.common_storage_lib.storage.base.*;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.tags.TagKey;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.material.Fluid;
@@ -65,27 +65,27 @@ public class TransferUtil {
         return 0;
     }
 
-    public static <T extends Resource> Tuple<T, Long> moveFiltered(CommonStorage<T> from, StorageIO<T> to, Predicate<T> filter, long amount, boolean simulate) {
+    public static <T extends Resource> Pair<T, Long> moveFiltered(CommonStorage<T> from, StorageIO<T> to, Predicate<T> filter, long amount, boolean simulate) {
         Optional<T> optional = findResource(from, filter);
         if (optional.isPresent()) {
             T resource = optional.get();
             long moved = move(from, to, resource, amount, simulate);
-            return new Tuple<>(resource, moved);
+            return Pair.of(resource, moved);
         }
-        return new Tuple<>(null, 0L);
+        return Pair.of(null, 0L);
     }
 
-    public static <T extends Resource> Tuple<T, Long> moveAny(CommonStorage<T> from, StorageIO<T> to, long amount, boolean simulate) {
+    public static <T extends Resource> Pair<T, Long> moveAny(CommonStorage<T> from, StorageIO<T> to, long amount, boolean simulate) {
         for (int i = 0; i < from.size(); i++) {
             StorageSlot<T> slot = from.get(i);
             if (slot.getResource().isBlank()) continue;
             T resource = slot.getResource();
             long moved = move(from, to, resource, amount, simulate);
             if (moved > 0) {
-                return new Tuple<>(resource, moved);
+                return Pair.of(resource, moved);
             }
         }
-        return new Tuple<>(null, 0L);
+        return Pair.of(null, 0L);
     }
 
     public static <T extends Resource> void moveAll(CommonStorage<T> from, StorageIO<T> to, boolean simulate) {
